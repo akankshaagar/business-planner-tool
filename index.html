@@ -113,35 +113,39 @@
 
       generateFields(businessTypeElement.value);
 
+      // updates: 1;
+
       const scriptURL =
         "https://script.google.com/macros/s/AKfycbxWDlkR4MHvN3QTS4XEc33Wzedw9WzTfkk0hNqLkAGLVUqMA7WUTNxmSHZwztyPaVZl/exec";
       const form = document.getElementById("businessForm");
-      const messageDiv = document.createElement("div"); // For success/error message display
-      form.after(messageDiv); // Insert after the form
+      const messageDiv = document.createElement("div");
+      form.after(messageDiv);
 
       form.addEventListener("submit", (e) => {
         e.preventDefault(); // Prevent default form submission
 
-        // Show loading message
+        // Show a loading message
         messageDiv.textContent = "Submitting form, please wait...";
         messageDiv.style.color = "blue";
 
-        // Convert form data to query string for GET request
-        const formData = new URLSearchParams(new FormData(form)).toString();
+        // Create a FormData object to send form data
+        const formData = new FormData(form);
 
-        // Make a GET request with query parameters
-        fetch(`${scriptURL}?${formData}`, { method: "GET" })
+        // Send the form data using fetch and POST method
+        fetch(scriptURL, {
+          method: "POST",
+          body: formData,
+        })
           .then((response) => response.json())
           .then((data) => {
-            // Display success message
+            // Success message on the page
             messageDiv.textContent =
               "Success! Data submitted to Google Sheets.";
             messageDiv.style.color = "green";
             form.reset(); // Reset the form after submission
           })
           .catch((error) => {
-            console.error("Error!", error.message); // Log error in console
-            // Display error message
+            console.error("Error!", error.message); // Log the error to the console
             messageDiv.textContent =
               "Error! Something went wrong, please try again.";
             messageDiv.style.color = "red";

@@ -116,7 +116,7 @@
       // file updates: 3 remove cors ;
 
       const scriptURL =
-        "https://script.google.com/macros/s/AKfycbxWDlkR4MHvN3QTS4XEc33Wzedw9WzTfkk0hNqLkAGLVUqMA7WUTNxmSHZwztyPaVZl/exec"; // Replace with your updated Web App URL
+        "https://script.google.com/macros/s/AKfycbxk_yk4M_gWczOlWtDueYCimHTnjdzDu9BUqunR0GHUlV1zWe76JvsIQAUujK2dTYDo/exec"; // Replace with your Web App URL
       const form = document.getElementById("businessForm");
       const messageDiv = document.createElement("div");
       form.after(messageDiv);
@@ -128,31 +128,35 @@
         messageDiv.textContent = "Submitting form, please wait...";
         messageDiv.style.color = "blue";
 
-        // Create an object to hold form data
+        // Prepare the form data as a JSON object
         const formData = new FormData(form);
         const formDataObj = {};
         formData.forEach((value, key) => {
           formDataObj[key] = value;
         });
 
-        // Send the form data as JSON using POST method
+        // Send the form data as JSON via POST
         fetch(scriptURL, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json", // Set content type as JSON
           },
-          body: JSON.stringify(formDataObj),
+          body: JSON.stringify(formDataObj), // Send form data as JSON
         })
           .then((response) => response.json())
           .then((data) => {
-            // Success message on the page
-            messageDiv.textContent =
-              "Success! Data submitted to Google Sheets.";
-            messageDiv.style.color = "green";
-            form.reset(); // Reset the form after submission
+            if (data.status === "success") {
+              messageDiv.textContent =
+                "Success! Data submitted to Google Sheets.";
+              messageDiv.style.color = "green";
+              form.reset(); // Reset the form after successful submission
+            } else {
+              messageDiv.textContent = "Error! Something went wrong.";
+              messageDiv.style.color = "red";
+            }
           })
           .catch((error) => {
-            console.error("Error!", error.message); // Log the error to the console
+            console.error("Error!", error.message); // Log the error
             messageDiv.textContent =
               "Error! Something went wrong, please try again.";
             messageDiv.style.color = "red";

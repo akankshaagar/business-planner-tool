@@ -54,7 +54,7 @@
       <div id="dynamicFields"></div>
 
       <button type="submit" id="submitButton" style="display: none">
-        Submit
+        Submit now
       </button>
     </form>
 
@@ -113,53 +113,32 @@
 
       generateFields(businessTypeElement.value);
 
-      // file updates: 5 remove cors ;
+      // file updates: 6 remove cors ;
 
       const scriptURL =
-        "https://script.google.com/macros/s/AKfycbxk_yk4M_gWczOlWtDueYCimHTnjdzDu9BUqunR0GHUlV1zWe76JvsIQAUujK2dTYDo/exec"; // Your updated Web App URL
-      const form = document.getElementById("businessForm");
-      const messageDiv = document.createElement("div");
-      form.after(messageDiv);
+        "https://script.google.com/macros/s/AKfycbxk_yk4M_gWczOlWtDueYCimHTnjdzDu9BUqunR0GHUlV1zWe76JvsIQAUujK2dTYDo/exec";
 
       form.addEventListener("submit", (e) => {
-        e.preventDefault(); // Prevent default form submission
+        e.preventDefault();
 
-        // Show a loading message
-        messageDiv.textContent = "Submitting form, please wait...";
-        messageDiv.style.color = "blue";
+        // Show loader or processing message
+        document.getElementById("status").innerText = "Submitting...";
 
-        // Prepare the form data as a JSON object
-        const formData = new FormData(form);
-        const formDataObj = {};
-        formData.forEach((value, key) => {
-          formDataObj[key] = value;
-        });
-
-        // Send the form data as JSON via POST
-        fetch(scriptURL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json", // Set content type as JSON
-          },
-          body: JSON.stringify(formDataObj), // Send form data as JSON
-        })
+        fetch(scriptURL, { method: "POST", body: new FormData(form) })
           .then((response) => response.json())
-          .then((data) => {
-            if (data.status === "success") {
-              messageDiv.textContent =
-                "Success! Data submitted to Google Sheets.";
-              messageDiv.style.color = "green";
-              form.reset(); // Reset the form after successful submission
+          .then((response) => {
+            if (response.status === "success") {
+              document.getElementById("status").innerText =
+                "Form submitted successfully!";
             } else {
-              messageDiv.textContent = "Error! Something went wrong.";
-              messageDiv.style.color = "red";
+              document.getElementById("status").innerText =
+                "Error: " + response.message;
             }
           })
           .catch((error) => {
-            console.error("Error!", error.message); // Log the error
-            messageDiv.textContent =
+            document.getElementById("status").innerText =
               "Error! Something went wrong, please try again.";
-            messageDiv.style.color = "red";
+            console.error("Error!", error.message);
           });
       });
     </script>

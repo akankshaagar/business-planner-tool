@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Planner Tool</title>
+    <style>
+      /* Simple styling */
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      form {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Business Planner Tool</h1>
+    <form id="businessForm">
+      <div class="form-group">
+        <label for="businessType">Select Business Type:</label>
+        <select id="businessType" name="businessType" required>
+          <option value="newBusiness">New Business</option>
+          <option value="existingBusiness">Existing Business</option>
+          <option value="newProduct">New Product</option>
+          <option value="newCategory">New Category</option>
+        </select>
+      </div>
+
+      <!-- Dynamic Fields will be inserted here -->
+      <div id="dynamicFields"></div>
+
+      <button type="submit" id="submitButton" style="display: none">
+        Submit
+      </button>
+    </form>
+
+    <script>
+      const businessTypeElement = document.getElementById("businessType");
+      const dynamicFieldsElement = document.getElementById("dynamicFields");
+      const submitButton = document.getElementById("submitButton");
+
+      const formFields = {
+        newBusiness: [
+          { label: "Business Name", name: "businessName", type: "text" },
+          { label: "Founder", name: "founder", type: "text" },
+        ],
+        existingBusiness: [
+          { label: "Current Revenue", name: "currentRevenue", type: "number" },
+          { label: "Current Team Size", name: "teamSize", type: "number" },
+        ],
+        newProduct: [
+          { label: "Product Name", name: "productName", type: "text" },
+          { label: "Target Audience", name: "targetAudience", type: "text" },
+        ],
+        newCategory: [
+          { label: "Category Name", name: "categoryName", type: "text" },
+          { label: "Market Size", name: "marketSize", type: "number" },
+        ],
+      };
+
+      businessTypeElement.addEventListener("change", () => {
+        const selectedType = businessTypeElement.value;
+        generateFields(selectedType);
+      });
+
+      function generateFields(type) {
+        dynamicFieldsElement.innerHTML = "";
+        const fields = formFields[type];
+
+        fields.forEach((field) => {
+          const formGroup = document.createElement("div");
+          formGroup.classList.add("form-group");
+
+          const label = document.createElement("label");
+          label.textContent = field.label;
+          formGroup.appendChild(label);
+
+          const input = document.createElement("input");
+          input.type = field.type;
+          input.name = field.name;
+          input.required = true;
+          formGroup.appendChild(input);
+
+          dynamicFieldsElement.appendChild(formGroup);
+        });
+
+        submitButton.style.display = "block";
+      }
+
+      generateFields(businessTypeElement.value);
+
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbxWDlkR4MHvN3QTS4XEc33Wzedw9WzTfkk0hNqLkAGLVUqMA7WUTNxmSHZwztyPaVZl/exec";
+      const form = document.getElementById("businessForm");
+      const messageDiv = document.createElement("div"); // For success/error message display
+      form.after(messageDiv); // Insert after the form
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        // Show loading message
+        messageDiv.textContent = "Submitting form, please wait...";
+        messageDiv.style.color = "blue";
+
+        // Convert form data to query string for GET request
+        const formData = new URLSearchParams(new FormData(form)).toString();
+
+        // Make a GET request with query parameters
+        fetch(`${scriptURL}?${formData}`, { method: "GET" })
+          .then((response) => response.json())
+          .then((data) => {
+            // Display success message
+            messageDiv.textContent =
+              "Success! Data submitted to Google Sheets.";
+            messageDiv.style.color = "green";
+            form.reset(); // Reset the form after submission
+          })
+          .catch((error) => {
+            console.error("Error!", error.message); // Log error in console
+            // Display error message
+            messageDiv.textContent =
+              "Error! Something went wrong, please try again.";
+            messageDiv.style.color = "red";
+          });
+      });
+    </script>
+  </body>
+</html>

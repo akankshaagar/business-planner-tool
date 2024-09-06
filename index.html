@@ -119,7 +119,7 @@
 
       generateFields(businessTypeElement.value);
 
-      // file updates: Decs1 debug mode code.js working now2;
+      // file updates: Decs1 debug mode code.js working now4;
 
       const scriptURL =
         "https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec";
@@ -149,9 +149,9 @@
 
         fetch(scriptURL, {
           method: "POST",
-          redirect: "follow",
+          mode: "cors", // Ensure this is set to 'cors'
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded", // Set this if necessary
           },
           body: JSON.stringify(jsonData), // Convert form data to JSON
         })

@@ -113,10 +113,14 @@
 
       generateFields(businessTypeElement.value);
 
-      // file updates: 6 remove cors ;
+      // file updates: Decs1 ;
 
       const scriptURL =
-        "https://script.google.com/macros/s/AKfycbxk_yk4M_gWczOlWtDueYCimHTnjdzDu9BUqunR0GHUlV1zWe76JvsIQAUujK2dTYDo/exec";
+        "https://script.google.com/macros/s/AKfycbzL_ZSVZ8nmf9KHlHHPUJXjZtCMcjFcHTEejEePlCxw86iTYbXfuC2MM99HOTweEswb/exec";
+
+      const form = document.getElementById("businessForm");
+      const messageDiv = document.createElement("div");
+      form.after(messageDiv);
 
       form.addEventListener("submit", (e) => {
         e.preventDefault();

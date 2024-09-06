@@ -119,13 +119,14 @@
 
       generateFields(businessTypeElement.value);
 
-      // file updates: Decs1 debug mode code.js working now12;
+      // file updates: Decs1 debug mode code.js working now13;
 
       const scriptURL =
         "https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec";
 
       const form = document.getElementById("businessForm");
       const messageDiv = document.createElement("div");
+
       form.after(messageDiv);
 
       form.addEventListener("submit", (e) => {
@@ -143,9 +144,10 @@
         // const jsonData = {};
 
         // Convert form data to JSON object
-        formData.forEach((value, key) => {
-          jsonData[key] = value;
-        });
+        // formData.forEach((value, key) => {
+
+        //   jsonData[key] = value;
+        // });
 
         console.log("Form is being submitted=============");
         console.log([...formData]);

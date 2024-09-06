@@ -119,7 +119,7 @@
 
       generateFields(businessTypeElement.value);
 
-      // file updates: Decs1 debug mode code.js working now6;
+      // file updates: Decs1 debug mode code.js working now7;
 
       const scriptURL =
         "https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec";
@@ -145,6 +145,7 @@
         });
 
         console.log("Form is being submitted");
+        console.log([...formData]);
         console.log(jsonData); // Log the data before submitting
 
         fetch(scriptURL, {
@@ -153,7 +154,8 @@
           headers: {
             "Content-Type": "application/x-www-form-urlencoded", // Set this if necessary
           },
-          body: JSON.stringify(jsonData), // Convert form data to JSON
+          // body: JSON.stringify(jsonData), // Convert form data to JSON
+          body: new URLSearchParams(formData).toString(), // Send form data as URL-encoded string
         })
           .then((response) => response.json())
           .then((response) => {

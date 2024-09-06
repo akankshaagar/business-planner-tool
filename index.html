@@ -119,7 +119,7 @@
 
       generateFields(businessTypeElement.value);
 
-      // file updates: Decs1 debug mode code.js working now8;
+      // file updates: Decs1 debug mode code.js working now9;
 
       const scriptURL =
         "https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec";
@@ -137,7 +137,8 @@
         console.log("Form submission started"); // Log form submission start
 
         const formData = new FormData(form);
-        const jsonData = {};
+        const jsonData = new URLSearchParams(formData); // Convert form data to URLSearchParams
+        // const jsonData = {};
 
         // Convert form data to JSON object
         formData.forEach((value, key) => {
@@ -156,7 +157,7 @@
           },
           // body: JSON.stringify(jsonData), // Convert form data to JSON
           //  body: new URLSearchParams(formData).toString(), // Send form data as URL-encoded string
-          body: new URLSearchParams(formData), // Use URLSearchParams to handle form data
+          body: jsonData, // Use URLSearchParams as the request body
         })
           .then((response) => response.json())
           .then((response) => {

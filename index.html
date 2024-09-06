@@ -119,7 +119,7 @@
 
       generateFields(businessTypeElement.value);
 
-      // file updates: Decs1 debug mode;
+      // file updates: Decs1 debug mode code.js working now;
 
       const scriptURL =
         "https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec";
@@ -137,8 +137,12 @@
         console.log("Form submission started"); // Log form submission start
 
         fetch(scriptURL, {
+          redirect: "follow",
           method: "POST",
           body: new FormData(form),
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+          },
         })
           .then((response) => response.json())
           .then((response) => {

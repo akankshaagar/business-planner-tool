@@ -57,11 +57,14 @@
         Submit now
       </button>
     </form>
+    <div id="status"></div>
+    <!-- Status messages will appear here -->
 
     <script>
       const businessTypeElement = document.getElementById("businessType");
       const dynamicFieldsElement = document.getElementById("dynamicFields");
       const submitButton = document.getElementById("submitButton");
+      const statusDiv = document.getElementById("status");
 
       const formFields = {
         newBusiness: [
@@ -84,12 +87,15 @@
 
       businessTypeElement.addEventListener("change", () => {
         const selectedType = businessTypeElement.value;
+
+        console.log("Business type selected:", selectedType); // Log selected business type
         generateFields(selectedType);
       });
 
       function generateFields(type) {
         dynamicFieldsElement.innerHTML = "";
         const fields = formFields[type];
+        console.log("Generating fields for:", type); // Log fields generation
 
         fields.forEach((field) => {
           const formGroup = document.createElement("div");
@@ -113,10 +119,10 @@
 
       generateFields(businessTypeElement.value);
 
-      // file updates: Decs1 ;
+      // file updates: Decs1 debug mode;
 
       const scriptURL =
-        "https://script.google.com/macros/s/AKfycbzL_ZSVZ8nmf9KHlHHPUJXjZtCMcjFcHTEejEePlCxw86iTYbXfuC2MM99HOTweEswb/exec";
+        "https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec";
 
       const form = document.getElementById("businessForm");
       const messageDiv = document.createElement("div");
@@ -128,22 +134,33 @@
         // Show loader or processing message
         document.getElementById("status").innerText = "Submitting...";
 
-        fetch(scriptURL, { method: "POST", body: new FormData(form) })
+        console.log("Form submission started"); // Log form submission start
+
+        fetch(scriptURL, {
+          method: "POST",
+          body: new FormData(form),
+        })
           .then((response) => response.json())
           .then((response) => {
+            console.log("Response received:", response); // Log the response from Google Apps Script
             if (response.status === "success") {
-              document.getElementById("status").innerText =
-                "Form submitted successfully!";
+              statusDiv.innerText = "Form submitted successfully!";
             } else {
-              document.getElementById("status").innerText =
-                "Error: " + response.message;
+              statusDiv.innerText = "Error: " + response.message;
+              console.error("Error:", response.message); // Log the error message
             }
           })
+          .then((data) => {
+            console.log("Data received:", data);
+          })
           .catch((error) => {
-            document.getElementById("status").innerText =
+            statusDiv.innerText =
               "Error! Something went wrong, please try again.";
-            console.error("Error!", error.message);
+            console.error("Fetch error:", error); // Log fetch error
           });
+
+        console.log("Form is being submitted");
+        console.log(new FormData(form)); // Check form data
       });
     </script>
   </body>

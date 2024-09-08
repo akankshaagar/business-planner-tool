@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
           method: "POST",
           mode: "cors", // Enable CORS (since the web app is hosted separately)
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded", // Set this if necessary
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         }

@@ -3,189 +3,205 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Business Planner Tool</title>
+    <title>Business Requirement Form</title>
     <style>
-      /* Simple styling */
       body {
         font-family: Arial, sans-serif;
-        padding: 20px;
+        margin: 20px;
+        background-color: #f4f4f4;
       }
       form {
-        max-width: 600px;
-        margin: 0 auto;
-      }
-      .form-group {
-        margin-bottom: 15px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       }
       label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
+        font-weight: bold;
       }
-      input,
-      select,
-      textarea {
+      input[type="text"],
+      select {
         width: 100%;
-        padding: 8px;
-        margin-top: 5px;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
       }
-      button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
+      input[type="submit"] {
+        background-color: #28a745;
+        color: #fff;
+        padding: 10px 15px;
         border: none;
+        border-radius: 3px;
         cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #218838;
+      }
+      .businessFields {
+        display: none;
+      }
+      .loader {
+        display: none;
+        margin: 10px 0;
+        font-weight: bold;
+        color: #007bff;
+      }
+      .success-message {
+        display: none;
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #28a745;
+        background-color: #d4edda;
+        color: #155724;
+        border-radius: 3px;
       }
     </style>
   </head>
   <body>
-    <h1>Business Planner Tool</h1>
-    <form id="businessForm">
-      <div class="form-group">
-        <label for="businessType">Select Business Type:</label>
-        <select id="businessType" name="businessType" required>
-          <option value="newBusiness">New Business</option>
-          <option value="existingBusiness">Existing Business</option>
-          <option value="newProduct">New Product</option>
-          <option value="newCategory">New Category</option>
-        </select>
+    <h1>Business Requirement Gathering Form</h1>
+
+    <form id="businessForm" method="POST">
+      <label for="BusinessType">Business Type:</label>
+      <select name="BusinessType" id="BusinessType" required>
+        <option value="">Select Business Type</option>
+        <option value="Ecommerce">Ecommerce</option>
+        <option value="Finance">Finance</option>
+        <option value="Consultation">Consultation s</option>
+        <option value="ServiceProvider">Service Provider</option>
+        <option value="Designing">Designing</option>
+      </select>
+
+      <!-- Ecommerce Fields -->
+      <div id="ecommerceFields" class="businessFields">
+        <label for="EcommerceProductType">Product Type:</label>
+        <input
+          type="text"
+          name="EcommerceProductType"
+          id="EcommerceProductType"
+        />
+
+        <label for="EcommercePlatform">Platform Used:</label>
+        <input type="text" name="EcommercePlatform" id="EcommercePlatform" />
       </div>
 
-      <!-- Dynamic Fields will be inserted here -->
-      <div id="dynamicFields"></div>
+      <!-- Finance Fields -->
+      <div id="financeFields" class="businessFields">
+        <label for="FinanceBudget">Budget:</label>
+        <input type="text" name="FinanceBudget" id="FinanceBudget" />
 
-      <button type="submit" id="submitButton" style="display: none">
-        Submit now
-      </button>
+        <label for="FinanceInvestors">Investors:</label>
+        <input type="text" name="FinanceInvestors" id="FinanceInvestors" />
+      </div>
+
+      <!-- Consultation Fields -->
+      <div id="consultationFields" class="businessFields">
+        <label for="ConsultationType">Consultation Type:</label>
+        <input type="text" name="ConsultationType" id="ConsultationType" />
+
+        <label for="ConsultationDuration">Duration:</label>
+        <input
+          type="text"
+          name="ConsultationDuration"
+          id="ConsultationDuration"
+        />
+      </div>
+
+      <!-- Service Provider Fields -->
+      <div id="serviceproviderFields" class="businessFields">
+        <label for="ServiceType">Service Type:</label>
+        <input type="text" name="ServiceType" id="ServiceType" />
+
+        <label for="ServiceArea">Service Area:</label>
+        <input type="text" name="ServiceArea" id="ServiceArea" />
+      </div>
+
+      <!-- Designing Fields -->
+      <div id="designingFields" class="businessFields">
+        <label for="DesigningType">Designing Type:</label>
+        <input type="text" name="DesigningType" id="DesigningType" />
+
+        <label for="DesigningArea">Designing Area:</label>
+        <input type="text" name="DesigningArea" id="DesigningArea" />
+      </div>
+
+      <div class="loader" id="loader">Submitting form... Please wait.</div>
+      <input type="submit" value="Submit" />
     </form>
-    <div id="status"></div>
-    <!-- Status messages will appear here -->
+
+    <div class="success-message" id="successMessage">
+      Form submitted successfully!
+    </div>
 
     <script>
-      const businessTypeElement = document.getElementById("businessType");
-      const dynamicFieldsElement = document.getElementById("dynamicFields");
-      const submitButton = document.getElementById("submitButton");
-      const statusDiv = document.getElementById("status");
-
-      const formFields = {
-        newBusiness: [
-          { label: "Business Name", name: "businessName", type: "text" },
-          { label: "Founder", name: "founder", type: "text" },
-        ],
-        existingBusiness: [
-          { label: "Current Revenue", name: "currentRevenue", type: "number" },
-          { label: "Current Team Size", name: "teamSize", type: "number" },
-        ],
-        newProduct: [
-          { label: "Product Name", name: "productName", type: "text" },
-          { label: "Target Audience", name: "targetAudience", type: "text" },
-        ],
-        newCategory: [
-          { label: "Category Name", name: "categoryName", type: "text" },
-          { label: "Market Size", name: "marketSize", type: "number" },
-        ],
-      };
-
-      businessTypeElement.addEventListener("change", () => {
-        const selectedType = businessTypeElement.value;
-
-        console.log("Business type selected:", selectedType); // Log selected business type
-        generateFields(selectedType);
-      });
-
-      function generateFields(type) {
-        dynamicFieldsElement.innerHTML = "";
-        const fields = formFields[type];
-        console.log("Generating fields for:", type); // Log fields generation
-
-        fields.forEach((field) => {
-          const formGroup = document.createElement("div");
-          formGroup.classList.add("form-group");
-
-          const label = document.createElement("label");
-          label.textContent = field.label;
-          formGroup.appendChild(label);
-
-          const input = document.createElement("input");
-          input.type = field.type;
-          input.name = field.name;
-          input.id = field.name;
-          input.required = true;
-          formGroup.appendChild(input);
-
-          dynamicFieldsElement.appendChild(formGroup);
-        });
-
-        submitButton.style.display = "block";
-      }
-
-      generateFields(businessTypeElement.value);
-
-      // file updates: Decs1 debug mode code.js working now14;
-
-      const scriptURL =
-        "https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec";
-
-      const form = document.getElementById("businessForm");
-      const messageDiv = document.createElement("div");
-
-      form.after(messageDiv);
-
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        // Show loader or processing message
-        document.getElementById("status").innerText = "Submitting...";
-
-        console.log("Form submission started"); // Log form submission start
-
-        const formData = new FormData(form);
-        const jsonData = new URLSearchParams(formData); // Convert form data to URLSearchParams
-        console.log("Form is being submitted as:", jsonData.toString()); // Log the form data
-
-        // const jsonData = {};
-
-        // Convert form data to JSON object
-        formData.forEach((value, key) => {
-          jsonData[key] = value;
-        });
-
-        console.log("Form is being submitted=============");
-        console.log([...formData]);
-
-        console.log(jsonData); // Log the data before submitting
-
-        fetch(scriptURL, {
-          method: "POST",
-          mode: "cors", // Ensure this is set to 'cors'
-          headers: {
-            "Content-Type": "application/json", // Set this if necessary
-          },
-          body: JSON.stringify(jsonData), // Convert form data to JSON
-          //  body: new URLSearchParams(formData).toString(), // Send form data as URL-encoded string
-          // body: jsonData.toString(), // Send URL-encoded form data
-        })
-          .then((response) => response.json())
-          .then((response) => {
-            console.log("Response received:", response); // Log the response from Google Apps Script
-            if (response.status === "success") {
-              statusDiv.innerText = "Form submitted successfully!";
-            } else {
-              statusDiv.innerText = "Error: " + response.message;
-              console.error("Error:", response.message); // Log the error message
-            }
-          })
-          .then((data) => {
-            console.log("Data received:", data);
-          })
-          .catch((error) => {
-            statusDiv.innerText =
-              "Error! Something went wrong, please try again.";
-            console.error("Fetch error:", error); // Log fetch error
+      document
+        .getElementById("BusinessType")
+        .addEventListener("change", function () {
+          var businessFields = document.querySelectorAll(".businessFields");
+          businessFields.forEach(function (field) {
+            // console.log("field" + field.innerHTML);
+            // console.log("businessFields" + businessFields.innerHTML);
+            field.style.display = "none";
           });
 
-        console.log("Form is being submitted");
-        console.log(new FormData(form)); // Check form data
-      });
+          var selectedBusinessType = this.value;
+          console.log("selectedBusinessType " + selectedBusinessType);
+          if (selectedBusinessType) {
+            var fieldsToShow = document.getElementById(
+              selectedBusinessType.toLowerCase() + "Fields"
+            );
+
+            console.log("fieldsToShow " + fieldsToShow.innerHTML);
+            if (fieldsToShow) {
+              fieldsToShow.style.display = "block";
+            }
+          }
+        });
+
+      document
+        .getElementById("businessForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault(); // Prevent the default form submission
+
+          var loader = document.getElementById("loader");
+          var successMessage = document.getElementById("successMessage");
+          var submitButton = document.querySelector('input[type="submit"]');
+          var formData = new FormData(this);
+
+          // Show the loader and disable the submit button
+          loader.style.display = "block";
+          submitButton.disabled = true;
+
+          fetch(
+            "https://script.google.com/macros/s/AKfycbwx6DeeDrI5BTEebyXitqroA6ITayohEMRd_tUTOj5_kbh1GFGKr-nDuCbANkJyX1lI/exec",
+            {
+              method: "POST",
+              body: formData,
+            }
+          )
+            .then((response) => response.text())
+            .then((data) => {
+              loader.style.display = "none";
+              submitButton.disabled = false;
+
+              if (data.includes("success")) {
+                successMessage.style.display = "block";
+                this.reset(); // Reset the form for a new entry
+                setTimeout(() => {
+                  successMessage.style.display = "none";
+                }, 5000); // Hide success message after 5 seconds
+              } else {
+                alert("There was an error submitting the form.");
+              }
+            })
+            .catch((error) => {
+              loader.style.display = "none";
+              submitButton.disabled = false;
+              alert("There was an error submitting the form.");
+            });
+        });
     </script>
   </body>
 </html>

@@ -1,148 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Business Requirement Form</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background-color: #f4f4f4;
-      }
-      form {
-        background: #fff;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
-      }
-      input[type="text"],
-      select {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-      }
-      input[type="submit"] {
-        background-color: #28a745;
-        color: #fff;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-      }
-      input[type="submit"]:hover {
-        background-color: #218838;
-      }
-      .businessFields {
-        display: none;
-      }
-      .loader {
-        display: none;
-        margin: 10px 0;
-        font-weight: bold;
-        color: #007bff;
-      }
-      .success-message {
-        display: none;
-        margin-top: 20px;
-        padding: 10px;
-        border: 1px solid #28a745;
-        background-color: #d4edda;
-        color: #155724;
-        border-radius: 3px;
-      }
-    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Form To Google Sheets Demo</title>
+    <meta
+      name="description"
+      content="Store HTML form submissions in Google Sheets"
+    />
+    <link href="./favicon.png" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="main.css" />
+    <script src="https://unpkg.com/prefixfree@1.0.0/prefixfree.min.js"></script>
+
+    <script src="https://wzrd.in/standalone/formdata-polyfill@latest"></script>
+    <script src="https://wzrd.in/standalone/promise-polyfill@latest"></script>
+    <script src="https://wzrd.in/standalone/whatwg-fetch@latest"></script>
   </head>
   <body>
-    <h1>Business Requirement Gathering Form</h1>
+    <div class="form-container">
+      <form name="submit-to-google-sheet">
+        <input name="email" type="email" placeholder="Email" required />
+        <input name="firstName" type="text" placeholder="First Name" />
+        <input name="lastName" type="text" placeholder="Last Name" />
+        <button type="submit">Subscribe</button>
+      </form>
 
-    <form
-      method="POST"
-      action="https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec"
-    >
-      <input name="Email" type="email" placeholder="Email" required />
-      <input name="Name" type="text" placeholder="Name" required />
-      <button type="submit">Send</button>
-    </form>
+      <div class="loading js-loading is-hidden">
+        <div class="loading-spinner">
+          <svg>
+            <circle
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              stroke-width="2"
+              stroke-miterlimit="10"
+            />
+          </svg>
+        </div>
+      </div>
 
-    <div class="success-message" id="successMessage">
-      Form submitted successfully!
+      <p class="js-success-message is-hidden">Success!</p>
+      <p class="js-error-message is-hidden">Error!</p>
     </div>
 
+    <a
+      href="https://docs.google.com/spreadsheets/d/16vDPkBwtMNNMzgbmKfxfOEqGZhtfJha097ZKB23dZdc/edit?usp=sharing"
+      target="_blank"
+      >View the Google Sheet</a
+    >
+    <a
+      href="https://github.com/jamiewilson/form-to-google-sheets"
+      target="_blank"
+      >View on GitHub</a
+    >
+
     <script>
-      // document
-      //   .getElementById("BusinessType")
-      //   .addEventListener("change", function () {
-      //     var businessFields = document.querySelectorAll(".businessFields");
-      //     businessFields.forEach(function (field) {
-      //       // console.log("field" + field.innerHTML);
-      //       // console.log("businessFields" + businessFields.innerHTML);
-      //       field.style.display = "none";
-      //     });
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec";
+      const form = document.forms["submit-to-google-sheet"];
+      const loading = document.querySelector(".js-loading");
+      const successMessage = document.querySelector(".js-success-message");
+      const errorMessage = document.querySelector(".js-error-message");
 
-      //     var selectedBusinessType = this.value;
-      //     console.log("selectedBusinessType " + selectedBusinessType);
-      //     if (selectedBusinessType) {
-      //       var fieldsToShow = document.getElementById(
-      //         selectedBusinessType.toLowerCase() + "Fields"
-      //       );
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        showLoadingIndicator();
+        fetch(scriptURL, { method: "POST", body: new FormData(form) })
+          .then((response) => showSuccessMessage(response))
+          .catch((error) => showErrorMessage(error));
+      });
 
-      //       console.log("fieldsToShow " + fieldsToShow.innerHTML);
-      //       if (fieldsToShow) {
-      //         fieldsToShow.style.display = "block";
-      //       }
-      //     }
-      //   });
+      function showLoadingIndicator() {
+        form.classList.add("is-hidden");
+        loading.classList.remove("is-hidden");
+      }
 
-      // document
-      //   .getElementById("businessForm")
-      //   .addEventListener("submit", function (e) {
-      //     e.preventDefault(); // Prevent the default form submission
+      function showSuccessMessage(response) {
+        console.log("Success!", response);
+        setTimeout(() => {
+          successMessage.classList.remove("is-hidden");
+          loading.classList.add("is-hidden");
+        }, 500);
+      }
 
-      //     var loader = document.getElementById("loader");
-      //     var successMessage = document.getElementById("successMessage");
-      //     var submitButton = document.querySelector('input[type="submit"]');
-      //     var formData = new FormData(this);
-
-      //     // Show the loader and disable the submit button
-      //     loader.style.display = "block";
-      //     submitButton.disabled = true;
-
-      //     fetch(
-      //       "https://script.google.com/macros/s/AKfycbzDDN5OaBB1sqq6HAt17SbCrqQEjxX9XTiatGMJFQfRc_xrCzoPCOkL2GK44HndBcqxwA/exec",
-      //       {
-      //         method: "POST",
-      //         body: formData,
-      //       }
-      //     )
-      //       .then((response) => response.text())
-      //       .then((data) => {
-      //         loader.style.display = "none";
-      //         submitButton.disabled = false;
-
-      //         if (data.includes("success")) {
-      //           successMessage.style.display = "block";
-      //           this.reset(); // Reset the form for a new entry
-      //           setTimeout(() => {
-      //             successMessage.style.display = "none";
-      //           }, 5000); // Hide success message after 5 seconds
-      //         } else {
-      //           alert("There was an error submitting the form.");
-      //         }
-      //       })
-      //       .catch((error) => {
-      //         loader.style.display = "none";
-      //         submitButton.disabled = false;
-      //         alert("There was an error submitting the form.");
-      //       });
-      //   });
+      function showErrorMessage(error) {
+        console.error("Error!", error.message);
+        setTimeout(() => {
+          errorMessage.classList.remove("is-hidden");
+          loading.classList.add("is-hidden");
+        }, 500);
+      }
     </script>
   </body>
 </html>

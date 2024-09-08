@@ -145,10 +145,9 @@
         // const jsonData = {};
 
         // Convert form data to JSON object
-        // formData.forEach((value, key) => {
-
-        //   jsonData[key] = value;
-        // });
+        formData.forEach((value, key) => {
+          jsonData[key] = value;
+        });
 
         console.log("Form is being submitted=============");
         console.log([...formData]);
@@ -159,11 +158,11 @@
           method: "POST",
           mode: "cors", // Ensure this is set to 'cors'
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded", // Set this if necessary
+            "Content-Type": "application/json", // Set this if necessary
           },
-          // body: JSON.stringify(jsonData), // Convert form data to JSON
+          body: JSON.stringify(jsonData), // Convert form data to JSON
           //  body: new URLSearchParams(formData).toString(), // Send form data as URL-encoded string
-          body: jsonData.toString(), // Send URL-encoded form data
+          // body: jsonData.toString(), // Send URL-encoded form data
         })
           .then((response) => response.json())
           .then((response) => {

@@ -11,11 +11,11 @@
     />
 
     <link rel="stylesheet" href="main.css" />
-    <script src="https://unpkg.com/prefixfree@1.0.0/prefixfree.min.js"></script>
+    <!-- <script src="https://unpkg.com/prefixfree@1.0.0/prefixfree.min.js"></script> -->
 
-    <script src="https://wzrd.in/standalone/formdata-polyfill@latest"></script>
+    <!-- <script src="https://wzrd.in/standalone/formdata-polyfill@latest"></script>
     <script src="https://wzrd.in/standalone/promise-polyfill@latest"></script>
-    <script src="https://wzrd.in/standalone/whatwg-fetch@latest"></script>
+    <script src="https://wzrd.in/standalone/whatwg-fetch@latest"></script> -->
   </head>
   <body>
     <div class="form-container">
@@ -67,13 +67,19 @@
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         showLoadingIndicator();
+
+        console.log("-===================--");
+        console.log("Form Data:");
+        for (let [key, value] of new FormData(form).entries()) {
+          console.log(key, value);
+        }
+        console.log("-===================--");
+
         fetch(scriptURL, { method: "POST", body: new FormData(form) })
           .then((response) => showSuccessMessage(response))
           .catch((error) => showErrorMessage(error));
       });
-      console.log("-===================--");
-      console.log(FormData(form));
-      console.log("-===================--");
+
       function showLoadingIndicator() {
         form.classList.add("is-hidden");
         loading.classList.remove("is-hidden");
@@ -88,7 +94,7 @@
       }
 
       function showErrorMessage(error) {
-        console.error("Error!", error.message);
+        console.error("Error!", error);
         setTimeout(() => {
           errorMessage.classList.remove("is-hidden");
           loading.classList.add("is-hidden");

@@ -71,7 +71,9 @@
           .then((response) => showSuccessMessage(response))
           .catch((error) => showErrorMessage(error));
       });
+      console.log("-===================--");
       console.log(FormData(form));
+      console.log("-===================--");
       function showLoadingIndicator() {
         form.classList.add("is-hidden");
         loading.classList.remove("is-hidden");

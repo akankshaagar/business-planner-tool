@@ -63,72 +63,13 @@
   <body>
     <h1>Business Requirement Gathering Form</h1>
 
-    <form id="businessForm" method="POST">
-      <label for="BusinessType">Business Type:</label>
-      <select name="BusinessType" id="BusinessType" required>
-        <option value="">Select Business Type</option>
-        <option value="Ecommerce">Ecommerce</option>
-        <option value="Finance">Finance</option>
-        <option value="Consultation">Consultation s</option>
-        <option value="ServiceProvider">Service Provider</option>
-        <option value="Designing">Designing</option>
-      </select>
-
-      <!-- Ecommerce Fields -->
-      <div id="ecommerceFields" class="businessFields">
-        <label for="EcommerceProductType">Product Type:</label>
-        <input
-          type="text"
-          name="EcommerceProductType"
-          id="EcommerceProductType"
-        />
-
-        <label for="EcommercePlatform">Platform Used:</label>
-        <input type="text" name="EcommercePlatform" id="EcommercePlatform" />
-      </div>
-
-      <!-- Finance Fields -->
-      <div id="financeFields" class="businessFields">
-        <label for="FinanceBudget">Budget:</label>
-        <input type="text" name="FinanceBudget" id="FinanceBudget" />
-
-        <label for="FinanceInvestors">Investors:</label>
-        <input type="text" name="FinanceInvestors" id="FinanceInvestors" />
-      </div>
-
-      <!-- Consultation Fields -->
-      <div id="consultationFields" class="businessFields">
-        <label for="ConsultationType">Consultation Type:</label>
-        <input type="text" name="ConsultationType" id="ConsultationType" />
-
-        <label for="ConsultationDuration">Duration:</label>
-        <input
-          type="text"
-          name="ConsultationDuration"
-          id="ConsultationDuration"
-        />
-      </div>
-
-      <!-- Service Provider Fields -->
-      <div id="serviceproviderFields" class="businessFields">
-        <label for="ServiceType">Service Type:</label>
-        <input type="text" name="ServiceType" id="ServiceType" />
-
-        <label for="ServiceArea">Service Area:</label>
-        <input type="text" name="ServiceArea" id="ServiceArea" />
-      </div>
-
-      <!-- Designing Fields -->
-      <div id="designingFields" class="businessFields">
-        <label for="DesigningType">Designing Type:</label>
-        <input type="text" name="DesigningType" id="DesigningType" />
-
-        <label for="DesigningArea">Designing Area:</label>
-        <input type="text" name="DesigningArea" id="DesigningArea" />
-      </div>
-
-      <div class="loader" id="loader">Submitting form... Please wait.</div>
-      <input type="submit" value="Submit" />
+    <form
+      method="POST"
+      action="https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec"
+    >
+      <input name="Email" type="email" placeholder="Email" required />
+      <input name="Name" type="text" placeholder="Name" required />
+      <button type="submit">Send</button>
     </form>
 
     <div class="success-message" id="successMessage">
@@ -136,72 +77,72 @@
     </div>
 
     <script>
-      document
-        .getElementById("BusinessType")
-        .addEventListener("change", function () {
-          var businessFields = document.querySelectorAll(".businessFields");
-          businessFields.forEach(function (field) {
-            // console.log("field" + field.innerHTML);
-            // console.log("businessFields" + businessFields.innerHTML);
-            field.style.display = "none";
-          });
+      // document
+      //   .getElementById("BusinessType")
+      //   .addEventListener("change", function () {
+      //     var businessFields = document.querySelectorAll(".businessFields");
+      //     businessFields.forEach(function (field) {
+      //       // console.log("field" + field.innerHTML);
+      //       // console.log("businessFields" + businessFields.innerHTML);
+      //       field.style.display = "none";
+      //     });
 
-          var selectedBusinessType = this.value;
-          console.log("selectedBusinessType " + selectedBusinessType);
-          if (selectedBusinessType) {
-            var fieldsToShow = document.getElementById(
-              selectedBusinessType.toLowerCase() + "Fields"
-            );
+      //     var selectedBusinessType = this.value;
+      //     console.log("selectedBusinessType " + selectedBusinessType);
+      //     if (selectedBusinessType) {
+      //       var fieldsToShow = document.getElementById(
+      //         selectedBusinessType.toLowerCase() + "Fields"
+      //       );
 
-            console.log("fieldsToShow " + fieldsToShow.innerHTML);
-            if (fieldsToShow) {
-              fieldsToShow.style.display = "block";
-            }
-          }
-        });
+      //       console.log("fieldsToShow " + fieldsToShow.innerHTML);
+      //       if (fieldsToShow) {
+      //         fieldsToShow.style.display = "block";
+      //       }
+      //     }
+      //   });
 
-      document
-        .getElementById("businessForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault(); // Prevent the default form submission
+      // document
+      //   .getElementById("businessForm")
+      //   .addEventListener("submit", function (e) {
+      //     e.preventDefault(); // Prevent the default form submission
 
-          var loader = document.getElementById("loader");
-          var successMessage = document.getElementById("successMessage");
-          var submitButton = document.querySelector('input[type="submit"]');
-          var formData = new FormData(this);
+      //     var loader = document.getElementById("loader");
+      //     var successMessage = document.getElementById("successMessage");
+      //     var submitButton = document.querySelector('input[type="submit"]');
+      //     var formData = new FormData(this);
 
-          // Show the loader and disable the submit button
-          loader.style.display = "block";
-          submitButton.disabled = true;
+      //     // Show the loader and disable the submit button
+      //     loader.style.display = "block";
+      //     submitButton.disabled = true;
 
-          fetch(
-            "https://script.google.com/macros/s/AKfycbzDDN5OaBB1sqq6HAt17SbCrqQEjxX9XTiatGMJFQfRc_xrCzoPCOkL2GK44HndBcqxwA/exec",
-            {
-              method: "POST",
-              body: formData,
-            }
-          )
-            .then((response) => response.text())
-            .then((data) => {
-              loader.style.display = "none";
-              submitButton.disabled = false;
+      //     fetch(
+      //       "https://script.google.com/macros/s/AKfycbzDDN5OaBB1sqq6HAt17SbCrqQEjxX9XTiatGMJFQfRc_xrCzoPCOkL2GK44HndBcqxwA/exec",
+      //       {
+      //         method: "POST",
+      //         body: formData,
+      //       }
+      //     )
+      //       .then((response) => response.text())
+      //       .then((data) => {
+      //         loader.style.display = "none";
+      //         submitButton.disabled = false;
 
-              if (data.includes("success")) {
-                successMessage.style.display = "block";
-                this.reset(); // Reset the form for a new entry
-                setTimeout(() => {
-                  successMessage.style.display = "none";
-                }, 5000); // Hide success message after 5 seconds
-              } else {
-                alert("There was an error submitting the form.");
-              }
-            })
-            .catch((error) => {
-              loader.style.display = "none";
-              submitButton.disabled = false;
-              alert("There was an error submitting the form.");
-            });
-        });
+      //         if (data.includes("success")) {
+      //           successMessage.style.display = "block";
+      //           this.reset(); // Reset the form for a new entry
+      //           setTimeout(() => {
+      //             successMessage.style.display = "none";
+      //           }, 5000); // Hide success message after 5 seconds
+      //         } else {
+      //           alert("There was an error submitting the form.");
+      //         }
+      //       })
+      //       .catch((error) => {
+      //         loader.style.display = "none";
+      //         submitButton.disabled = false;
+      //         alert("There was an error submitting the form.");
+      //       });
+      //   });
     </script>
   </body>
 </html>

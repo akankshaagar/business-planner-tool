@@ -68,6 +68,8 @@
         showLoadingIndicator();
 
         const formData = new FormData(form);
+        // Convert FormData to URL-encoded string
+        const formBody = new URLSearchParams(formData).toString();
 
         console.log("Form Data:");
         // Loop through the formData and log it
@@ -75,7 +77,13 @@
           console.log(key, value);
         }
 
-        fetch(scriptURL, { method: "POST", body: formData })
+        fetch(scriptURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded", // Ensure the form data is sent as URL-encoded
+          },
+          body: formBody, // Send the URL-encoded string
+        })
           .then((response) => {
             if (response.ok) {
               showSuccessMessage(response);

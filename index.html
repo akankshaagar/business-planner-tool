@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
     <title>Form To Google Sheets Demo</title>
     <meta
       name="description"
@@ -11,15 +10,15 @@
     />
 
     <link rel="stylesheet" href="main.css" />
-    <!-- <script src="https://unpkg.com/prefixfree@1.0.0/prefixfree.min.js"></script> -->
-
-    <!-- <script src="https://wzrd.in/standalone/formdata-polyfill@latest"></script>
-    <script src="https://wzrd.in/standalone/promise-polyfill@latest"></script>
-    <script src="https://wzrd.in/standalone/whatwg-fetch@latest"></script> -->
   </head>
   <body>
     <div class="form-container">
-      <form name="submit-to-google-sheet">
+      <!-- Added method and action attributes -->
+      <form
+        name="submit-to-google-sheet"
+        method="POST"
+        action="https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec"
+      >
         <input name="email" type="email" placeholder="Email" required />
         <input name="firstName" type="text" placeholder="First Name" />
         <input name="lastName" type="text" placeholder="Last Name" />
@@ -70,15 +69,20 @@
 
         const formData = new FormData(form);
 
-        console.log("-===================--");
         console.log("Form Data:");
-        for (let [key, value] of new FormData(form).entries()) {
+        // Loop through the formData and log it
+        for (let [key, value] of formData.entries()) {
           console.log(key, value);
         }
-        console.log("-===================--");
 
         fetch(scriptURL, { method: "POST", body: formData })
-          .then((response) => showSuccessMessage(response))
+          .then((response) => {
+            if (response.ok) {
+              showSuccessMessage(response);
+            } else {
+              showErrorMessage(new Error("Form submission failed"));
+            }
+          })
           .catch((error) => showErrorMessage(error));
       });
 

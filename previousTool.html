@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Form To Google Sheets Demo</title>
+    <meta
+      name="description"
+      content="Store HTML form submissions in Google Sheets"
+    />
+
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div class="form-container">
+      <!-- Added method and action attributes -->
+      <form
+        name="submit-to-google-sheet"
+        method="POST"
+        action="https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec"
+      >
+        <input name="email" type="email" placeholder="Email" required />
+        <input name="firstName" type="text" placeholder="First Name" />
+        <input name="lastName" type="text" placeholder="Last Name" />
+        <button type="submit">Subscribe</button>
+      </form>
+
+      <div class="loading js-loading is-hidden">
+        <div class="loading-spinner">
+          <svg>
+            <circle
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              stroke-width="2"
+              stroke-miterlimit="10"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <p class="js-success-message is-hidden">Success!</p>
+      <p class="js-error-message is-hidden">Error!</p>
+    </div>
+
+    <a
+      href="https://docs.google.com/spreadsheets/d/1VbssSMHtcGfpiscvbHV8bOTB36aLVwj8Xm9rIXohbvg/edit?gid=0#gid=0"
+      target="_blank"
+      >View the Google Sheet</a
+    >
+    <a
+      href="https://github.com/jamiewilson/form-to-google-sheets"
+      target="_blank"
+      >View on GitHub</a
+    >
+
+    <script>
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec";
+      const form = document.forms["submit-to-google-sheet"];
+      const loading = document.querySelector(".js-loading");
+      const successMessage = document.querySelector(".js-success-message");
+      const errorMessage = document.querySelector(".js-error-message");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        showLoadingIndicator();
+
+        const formData = new FormData(form);
+        // Convert FormData to URL-encoded string
+        const formBody = new URLSearchParams(formData).toString();
+
+        console.log("Form Data:");
+        // Loop through the formData and log it
+        for (let [key, value] of formData.entries()) {
+          console.log(key, value);
+        }
+
+        fetch(scriptURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded", // Ensure the form data is sent as URL-encoded
+          },
+          body: formBody, // Send the URL-encoded string
+        })
+          .then((response) => {
+            if (response.ok) {
+              showSuccessMessage(response);
+            } else {
+              showErrorMessage(new Error("Form submission failed"));
+            }
+          })
+          .catch((error) => showErrorMessage(error));
+      });
+
+      function showLoadingIndicator() {
+        form.classList.add("is-hidden");
+        loading.classList.remove("is-hidden");
+      }
+
+      function showSuccessMessage(response) {
+        console.log("Success!", response);
+        setTimeout(() => {
+          successMessage.classList.remove("is-hidden");
+          loading.classList.add("is-hidden");
+        }, 500);
+      }
+
+      function showErrorMessage(error) {
+        console.error("Error!", error);
+        setTimeout(() => {
+          errorMessage.classList.remove("is-hidden");
+          loading.classList.add("is-hidden");
+        }, 500);
+      }
+    </script>
+  </body>
+</html>

@@ -1,119 +1,393 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Form To Google Sheets Demo</title>
-    <meta
-      name="description"
-      content="Store HTML form submissions in Google Sheets"
-    />
+<html lang="en">
 
-    <link rel="stylesheet" href="main.css" />
-  </head>
-  <body>
-    <div class="form-container">
-      <!-- Added method and action attributes -->
-      <form
-        name="submit-to-google-sheet"
-        method="POST"
-        action="https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec"
-      >
-        <input name="email" type="email" placeholder="Email" required />
-        <input name="firstName" type="text" placeholder="First Name" />
-        <input name="lastName" type="text" placeholder="Last Name" />
-        <button type="submit">Subscribe</button>
-      </form>
-
-      <div class="loading js-loading is-hidden">
-        <div class="loading-spinner">
-          <svg>
-            <circle
-              cx="25"
-              cy="25"
-              r="20"
-              fill="none"
-              stroke-width="2"
-              stroke-miterlimit="10"
-            />
-          </svg>
-        </div>
-      </div>
-
-      <p class="js-success-message is-hidden">Success!</p>
-      <p class="js-error-message is-hidden">Error!</p>
-    </div>
-
-    <a
-      href="https://docs.google.com/spreadsheets/d/1VbssSMHtcGfpiscvbHV8bOTB36aLVwj8Xm9rIXohbvg/edit?gid=0#gid=0"
-      target="_blank"
-      >View the Google Sheet</a
-    >
-    <a
-      href="https://github.com/jamiewilson/form-to-google-sheets"
-      target="_blank"
-      >View on GitHub</a
-    >
-
-    <script>
-      const scriptURL =
-        "https://script.google.com/macros/s/AKfycbwB8ndhUnIp-Om10efOfNr6mwAy6EDoPnkwGnMmZhgLZXuH2nyItGhd-sqT53YiMx-o/exec";
-      const form = document.forms["submit-to-google-sheet"];
-      const loading = document.querySelector(".js-loading");
-      const successMessage = document.querySelector(".js-success-message");
-      const errorMessage = document.querySelector(".js-error-message");
-
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        showLoadingIndicator();
-
-        const formData = new FormData(form);
-        // Convert FormData to URL-encoded string
-        const formBody = new URLSearchParams(formData).toString();
-
-        console.log("Form Data:");
-        // Loop through the formData and log it
-        for (let [key, value] of formData.entries()) {
-          console.log(key, value);
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Plan Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7f7f7;
         }
 
-        fetch(scriptURL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded", // Ensure the form data is sent as URL-encoded
-          },
-          body: formBody, // Send the URL-encoded string
-        })
-          .then((response) => {
-            if (response.ok) {
-              showSuccessMessage(response);
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .form-title {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #444;
+            text-align: center;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+        
+        .success-message {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #dff0d8;
+            color: #3c763d;
+            border-radius: 4px;
+            display: none;
+            text-align: center;
+        }
+        .countdown-message {
+            text-align: center;
+            margin-top: 10px;
+            color: #777;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .loading-message {
+            text-align: center;
+            margin-top: 10px;
+            color: #555;
+        }
+        
+        
+    </style>
+</head>
+
+<body>
+
+    <h2>Business Plan Submission Form</h2>
+
+    <form id="business-form" method="POST" action="https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec">
+        <div class="form-group">
+            <label for="businessType">Select Business Type:</label>
+            <select id="businessType" name="businessType" required>
+                <option value="">Select...</option>
+                <option value="Ecommerce">Ecommerce</option>
+                <option value="Retail">Retail</option>
+                <option value="SaaS">SaaS</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Consultancy">Consultancy</option>
+            </select>
+        </div>
+
+        <!-- This container will dynamically hold the questionnaire fields -->
+        <div id="questionnaire-container"></div>
+
+        <!-- Submit button initially hidden -->
+        <button id="submit-btn" class="hidden" type="submit">Submit</button>
+        
+        <div id="countdown-message" class="countdown-message hidden"></div>
+        <div class="loading-message hidden" id="loading-message"></div>
+        <div class="success-message hidden" id="success-message">Form submitted successfully!</div>
+    </form>
+<div class="table-container">
+    <h3>View Data for Business Type</h3>
+    <button id="fetch-data-btn" class="hidden">Fetch Data</button>
+    <div id="loading-data-message" class="loading-message hidden">Loading data...</div>
+    <table id="data-table" class="hidden">
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+    </table>
+</div>
+
+
+
+    <script>
+        const form = document.getElementById('business-form');
+        const questionnaireContainer = document.getElementById('questionnaire-container');
+        const submitBtn = document.getElementById('submit-btn');
+         const fetchDataBtn = document.getElementById('fetch-data-btn');
+        const countdownMessage = document.getElementById('countdown-message');
+        const loadingMessage = document.getElementById('loading-message');
+        const successMessage = document.getElementById('success-message');
+    
+        const dataTable = document.getElementById('data-table');
+            const tableHead = document.getElementById('table-head');
+            const tableBody = document.getElementById('table-body');
+            const loadingDataMessage = document.getElementById('loading-data-message');
+
+            console.log('JavaScript loaded'); // Debugging
+
+
+        // Business-specific questions
+        const businessQuestions = {
+            'Ecommerce': [
+                { name: 'websiteURL', type: 'text', placeholder: 'Website URL' },
+                { name: 'productTypes', type: 'text', placeholder: 'Types of Products' }
+            ],
+            'Retail': [
+                { name: 'storeLocation', type: 'text', placeholder: 'Store Location' },
+                { name: 'annualRevenue', type: 'number', placeholder: 'Annual Revenue' }
+            ],
+            'SaaS': [
+                { name: 'subscriptionModel', type: 'text', placeholder: 'Subscription Model' },
+                { name: 'customerBase', type: 'number', placeholder: 'Customer Base Size' }
+            ],
+            'Manufacturing': [
+                { name: 'productionCapacity', type: 'text', placeholder: 'Production Capacity' },
+                { name: 'productTypes', type: 'text', placeholder: 'Product Types' }
+            ],
+            'Consultancy': [
+                { name: 'consultingAreas', type: 'text', placeholder: 'Consulting Areas' },
+                { name: 'clientCount', type: 'number', placeholder: 'Number of Clients' }
+            ]
+        };
+
+        // Event listener for business type dropdown
+        document.getElementById('businessType').addEventListener('change', function () {
+            const businessType = this.value;
+            console.log(`Business type selected: ${businessType}`); // Log the selected business type
+            renderForm(businessType);
+        });
+
+        // Dynamically render the form based on selected business type
+        function renderForm(businessType) {
+            questionnaireContainer.innerHTML = ''; // Clear previous form
+            
+            submitBtn.classList.add('hidden'); // Hide submit button initially
+              countdownMessage.classList.add('hidden'); // Hide countdown initially
+            fetchDataBtn.classList.add('hidden'); // Hide fetch data button initially
+            dataTable.classList.add('hidden'); // Hide data table initially
+            console.log('Rendering form for:', businessType); // Debugging
+
+            if (businessQuestions[businessType]) {
+                console.log(`Rendering form for business type: ${businessType}`); // Log the form rendering process
+
+                // Loop through questions for selected business and append to form
+                businessQuestions[businessType].forEach(question => {
+                    console.log(`Adding question: ${question.placeholder}`); // Log each question being added
+
+                    const inputDiv = document.createElement('div');
+                    inputDiv.className = 'form-group';
+
+                    const label = document.createElement('label');
+                    label.textContent = question.placeholder;
+
+                    const input = document.createElement('input');
+                    input.type = question.type;
+                    input.name = question.name;
+                    input.placeholder = question.placeholder;
+                    input.required = true;
+
+                    inputDiv.appendChild(label);
+                    inputDiv.appendChild(input);
+                    questionnaireContainer.appendChild(inputDiv);
+                });
+
+                submitBtn.classList.remove('hidden'); // Show submit button only when form is ready
+                 fetchDataBtn.classList.remove('hidden'); // Show fetch data button when business type is selected
+                console.log('Form rendered and buttons shown'); // Debugging
+                
             } else {
-              showErrorMessage(new Error("Form submission failed"));
+                console.warn("No form found for the selected business type.");
             }
-          })
-          .catch((error) => showErrorMessage(error));
-      });
+        }
 
-      function showLoadingIndicator() {
-        form.classList.add("is-hidden");
-        loading.classList.remove("is-hidden");
-      }
+         // Form submission logic
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
+                console.log('Form submission triggered'); // Debugging
+                    
+                // Disable the submit button to prevent multiple submissions
+                submitBtn.disabled = true;
 
-      function showSuccessMessage(response) {
-        console.log("Success!", response);
-        setTimeout(() => {
-          successMessage.classList.remove("is-hidden");
-          loading.classList.add("is-hidden");
-        }, 500);
-      }
+                // Set countdown time (e.g., 5 seconds)
+                let countdownTime = 5;
 
-      function showErrorMessage(error) {
-        console.error("Error!", error);
-        setTimeout(() => {
-          errorMessage.classList.remove("is-hidden");
-          loading.classList.add("is-hidden");
-        }, 500);
-      }
+                // Show countdown message
+              
+                countdownMessage.classList.remove('hidden');
+                countdownMessage.textContent = `Form will be submitted in ${countdownTime} seconds...`;
+                  
+                const countdownInterval = setInterval(() => {
+                    countdownTime--;
+                    countdownMessage.textContent = `Form will be submitted in ${countdownTime} seconds...`;
+
+                    if (countdownTime <= 0) {
+                        clearInterval(countdownInterval); // Stop countdown
+
+                        // Show a loading message
+                        loadingMessage.textContent = "Submitting form... please wait.";
+                        loadingMessage.style.display = 'block';
+                        countdownMessage.classList.add('hidden'); // Hide the countdown message
+                        console.log('Submitting form data...'); // Debugging
+                        // Collect form data
+                        const formData = new FormData(form);
+
+                        // Send the form data using Fetch API
+                        fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                        })
+                            .then(response => response.json())
+                            .then(result => {
+                             console.log('Response from server:', result); // Debugging
+                                loadingMessage.classList.add('hidden'); // Hide loading message
+                                if (result.result === 'success') {
+                                    // Success: Show success message
+                                    successMessage.style.display = 'block';
+                                    loadingMessage.style.display = 'none'; // Hide the loading message
+                                    form.reset(); // Reset the form
+                                    questionnaireContainer.innerHTML = ''; // Clear the form fields
+                                    submitBtn.classList.add('hidden'); // Hide the submit button again
+                                     fetchDataBtn.classList.add('hidden'); // Hide fetch data button again
+                                    console.log('Form submitted successfully'); // Debugging
+                                } else {
+                                    // Handle errors
+                                    console.error('Error saving data:', result.error);
+                                    alert('Error submitting the form. Please try again.');
+                                    submitBtn.disabled = false; // Re-enable the button on error
+                                    loadingMessage.style.display = 'none'; // Hide the loading message
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error during form submission:', error);
+                                alert('Error submitting the form. Please try again.');
+                                submitBtn.disabled = false; // Re-enable the button on error
+                                loadingMessage.style.display = 'none'; // Hide the loading message
+                                  console.error('Error during form submission:', error); // Debugging
+                            });
+                    }
+                }, 1000); // Countdown interval of 1 second
+            });
+            
+            // ==========================data fetch
+            
+              // Fetch and display data in table format
+                fetchDataBtn.addEventListener('click', function () {
+                    const businessType = document.getElementById('businessType').value;
+                    console.log('Fetching data for business type:', businessType); // Debugging
+                    if (businessType) {
+                        fetchDataForBusinessType(businessType);
+                    } else {
+                        alert('Please select a business type.');
+                    }
+                });
+
+                // Function to fetch data from the Google Apps Script
+                function fetchDataForBusinessType(businessType) {
+                    const url = `https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec?businessType=${businessType}`;
+                    loadingDataMessage.classList.remove('hidden'); // Show loading message
+                    fetch(url, {
+                     method: 'GET',
+                        mode: 'no-cors', // This disables CORS errors but doesn't allow access to the response  
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            loadingDataMessage.classList.add('hidden'); // Hide loading message
+                            if (data.result === 'success') {
+                                console.log('Data fetched:', data.data); // Debugging
+                                populateTable(data.data);
+                            } else {
+                                alert('No data found for this business type');
+                            }
+                        })
+                        .catch(error => {
+                            loadingDataMessage.classList.add('hidden'); // Hide loading message
+                            console.error('Error fetching data:', error); // Debugging
+                            alert('Error fetching data');
+                        });
+                }
+
+                // Function to populate the table with sheet data
+                function populateTable(data) {
+                    tableHead.innerHTML = ''; // Clear previous headers
+                    tableBody.innerHTML = ''; // Clear previous data
+
+                    // Populate headers
+                    const headers = data[0];
+                    const headerRow = document.createElement('tr');
+                    headers.forEach(header => {
+                        const th = document.createElement('th');
+                        th.textContent = header;
+                        headerRow.appendChild(th);
+                    });
+                    tableHead.appendChild(headerRow);
+
+                    // Populate data rows
+                    data.slice(1).forEach(row => {
+                        const dataRow = document.createElement('tr');
+                        row.forEach(cell => {
+                            const td = document.createElement('td');
+                            td.textContent = cell;
+                            dataRow.appendChild(td);
+                        });
+                        tableBody.appendChild(dataRow);
+                    });
+
+                    dataTable.classList.remove('hidden'); // Show the data table
+                    console.log('Table populated with sheet data'); // Debugging
+                }
     </script>
-  </body>
+
+</body>
+
 </html>

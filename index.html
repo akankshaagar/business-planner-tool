@@ -360,8 +360,11 @@
 
               // Append table to the container
               container.appendChild(table);
+              // Get the chart type based on the sheet name
+              const chartType = getChartType(sheetName);
+
               // Call renderGraph to create a graph for the current sheet
-              renderGraph(data, sheetName);
+              renderGraph(data, sheetName, chartType);
 
               console.log(`Table created for sheet: ${sheetName}`); // Debugging
             });
@@ -403,8 +406,8 @@
         Consultancy: "radar", // Radar chart for Consultancy data
       };
 
-      // Function to render the graph for a given sheet's data
-      function renderGraph(data, sheetName) {
+      // Function to render the graph for a given sheet's data and chart type
+      function renderGraph(data, sheetName, chartType) {
         // Create a new canvas element for each graph
         const graphContainer = document.createElement("div");
         graphContainer.classList.add("graph-container");
@@ -414,27 +417,29 @@
 
         const ctx = canvas.getContext("2d");
 
-        // Extract labels and values from the data (assuming first column is labels, second column is values)
+        // Use the first row for headers (labels for the chart)
+        const headers = data[0]; // First row (headers)
         const labels = data.slice(1).map((row) => row[0]); // First column for labels (ignoring the header row)
-        const values = data.slice(1).map((row) => parseFloat(row[1])); // Second column for values (converting to numbers)
 
-        // Get the chart type from the sheetChartTypes mapping or default to 'bar'
-        const chartType = sheetChartTypes[sheetName] || "bar";
+        // Create datasets for each column of data
+        const datasets = headers.slice(1).map((header, index) => ({
+          label: header, // Use the header as the label for the dataset
+          data: data.slice(1).map((row) => parseFloat(row[index + 1])), // Data for each column
+          backgroundColor: `rgba(${Math.random() * 255}, ${
+            Math.random() * 255
+          }, ${Math.random() * 255}, 0.2)`, // Random color for each dataset
+          borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
+            Math.random() * 255
+          }, 1)`,
+          borderWidth: 1,
+        }));
 
         // Create a new chart
         new Chart(ctx, {
-          type: chartType, // Use the chart type based on the sheet name
+          type: chartType, // Dynamic chart type based on the sheet
           data: {
-            labels: labels,
-            datasets: [
-              {
-                label: `Graph for ${sheetName}`, // Label for each graph
-                data: values,
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                borderColor: "rgba(75, 192, 192, 1)",
-                borderWidth: 1,
-              },
-            ],
+            labels: labels, // Labels for the chart
+            datasets: datasets, // Datasets for the chart
           },
           options: {
             scales: {
@@ -447,6 +452,21 @@
 
         // Append the graph container after the table
         container.appendChild(graphContainer);
+      }
+
+      // Function to get the chart type based on the sheet name (customize as needed)
+      function getChartType(sheetName) {
+        // Map sheet names to chart types, customize this as per your needs
+        const chartTypes = {
+          Ecommerce: "bar",
+          Retail: "line",
+          SaaS: "pie",
+          Manufacturing: "doughnut",
+          Consultancy: "radar",
+        };
+
+        // Return the corresponding chart type, or 'bar' as the default
+        return chartTypes[sheetName] || "bar";
       }
     </script>
   </body>

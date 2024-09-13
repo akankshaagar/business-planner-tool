@@ -397,77 +397,77 @@
         }
       });
 
-      // Define a mapping of sheet names to chart types
-      const sheetChartTypes = {
-        Ecommerce: "bar", // Bar chart for Ecommerce data
-        Retail: "line", // Line chart for Retail data
-        SaaS: "pie", // Pie chart for SaaS data
-        Manufacturing: "doughnut", // Doughnut chart for Manufacturing data
-        Consultancy: "radar", // Radar chart for Consultancy data
-      };
+      //   // Define a mapping of sheet names to chart types
+      //   const sheetChartTypes = {
+      //     Ecommerce: "bar", // Bar chart for Ecommerce data
+      //     Retail: "line", // Line chart for Retail data
+      //     SaaS: "pie", // Pie chart for SaaS data
+      //     Manufacturing: "doughnut", // Doughnut chart for Manufacturing data
+      //     Consultancy: "radar", // Radar chart for Consultancy data
+      //   };
 
-      // Function to render the graph for a given sheet's data and chart type
-      function renderGraph(data, sheetName, chartType) {
-        // Create a new canvas element for each graph
-        const graphContainer = document.createElement("div");
-        graphContainer.classList.add("graph-container");
+      //   // Function to render the graph for a given sheet's data and chart type
+      //   function renderGraph(data, sheetName, chartType) {
+      //     // Create a new canvas element for each graph
+      //     const graphContainer = document.createElement("div");
+      //     graphContainer.classList.add("graph-container");
 
-        const canvas = document.createElement("canvas");
-        graphContainer.appendChild(canvas);
+      //     const canvas = document.createElement("canvas");
+      //     graphContainer.appendChild(canvas);
 
-        const ctx = canvas.getContext("2d");
+      //     const ctx = canvas.getContext("2d");
 
-        // Use the first row for headers (labels for the chart)
-        const headers = data[0]; // First row (headers)
-        const labels = data.slice(1).map((row) => row[0]); // First column for labels (ignoring the header row)
+      //     // Use the first row for headers (labels for the chart)
+      //     const headers = data[0]; // First row (headers)
+      //     const labels = data.slice(1).map((row) => row[0]); // First column for labels (ignoring the header row)
 
-        // Create datasets for each column of data
-        const datasets = headers.slice(1).map((header, index) => ({
-          label: header, // Use the header as the label for the dataset
-          data: data.slice(1).map((row) => parseFloat(row[index + 1])), // Data for each column
-          backgroundColor: `rgba(${Math.random() * 255}, ${
-            Math.random() * 255
-          }, ${Math.random() * 255}, 0.2)`, // Random color for each dataset
-          borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
-            Math.random() * 255
-          }, 1)`,
-          borderWidth: 1,
-        }));
+      //     // Create datasets for each column of data
+      //     const datasets = headers.slice(1).map((header, index) => ({
+      //       label: header, // Use the header as the label for the dataset
+      //       data: data.slice(1).map((row) => parseFloat(row[index + 1])), // Data for each column
+      //       backgroundColor: `rgba(${Math.random() * 255}, ${
+      //         Math.random() * 255
+      //       }, ${Math.random() * 255}, 0.2)`, // Random color for each dataset
+      //       borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
+      //         Math.random() * 255
+      //       }, 1)`,
+      //       borderWidth: 1,
+      //     }));
 
-        // Create a new chart
-        new Chart(ctx, {
-          type: chartType, // Dynamic chart type based on the sheet
-          data: {
-            labels: labels, // Labels for the chart
-            datasets: datasets, // Datasets for the chart
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true,
-              },
-            },
-          },
-        });
+      //     // Create a new chart
+      //     new Chart(ctx, {
+      //       type: chartType, // Dynamic chart type based on the sheet
+      //       data: {
+      //         labels: labels, // Labels for the chart
+      //         datasets: datasets, // Datasets for the chart
+      //       },
+      //       options: {
+      //         scales: {
+      //           y: {
+      //             beginAtZero: true,
+      //           },
+      //         },
+      //       },
+      //     });
 
-        // Append the graph container after the table
-        container.appendChild(graphContainer);
-      }
+      //     // Append the graph container after the table
+      //     container.appendChild(graphContainer);
+      //   }
 
-      // Function to get the chart type based on the sheet name (customize as needed)
-      function getChartType(sheetName) {
-        // Map sheet names to chart types, customize this as per your needs
-        const chartTypes = {
-          Ecommerce: "bar",
-          Retail: "line",
-          SaaS: "pie",
-          Manufacturing: "doughnut",
-          Consultancy: "radar",
-        };
+      //   // Function to get the chart type based on the sheet name (customize as needed)
+      //   function getChartType(sheetName) {
+      //     // Map sheet names to chart types, customize this as per your needs
+      //     const chartTypes = {
+      //       Ecommerce: "bar",
+      //       Retail: "line",
+      //       SaaS: "pie",
+      //       Manufacturing: "doughnut",
+      //       Consultancy: "radar",
+      //     };
 
-        // Return the corresponding chart type, or 'bar' as the default
-        return chartTypes[sheetName] || "bar";
-      }
+      //     // Return the corresponding chart type, or 'bar' as the default
+      //     return chartTypes[sheetName] || "bar";
+      //   }
     </script>
   </body>
 </html>

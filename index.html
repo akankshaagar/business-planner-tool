@@ -251,7 +251,7 @@
       <div class="data-container">
         <h3>View Data from Google Sheets</h3>
         <button id="fetch-data-btn">Fetch all Data</button>
-        <div id="loading-data-message" class="loading-message">
+        <div id="loading-data-message" class="loading-message hidden>
           Loading data...
         </div>
 
@@ -488,14 +488,14 @@
 
         // Record the start time
         const startTime = Date.now();
-        let counter = 0;
+        loadingDataMessage.textContent = `Loading data... 0 seconds`;
 
-        // Counter update function
-        const counterInterval = setInterval(() => {
-          counter = Math.floor((Date.now() - startTime) / 1000);
-          console.log(counter);
-          loadingDataMessage.textContent = `Loading data... (${counter} seconds elapsed)`;
-        }, 1000); // Update the counter every 1 second
+        // Start an interval to update the counter every second
+        const interval = setInterval(() => {
+          counter++;
+          console.log(`Loading data... ${counter} seconds`); // Debugging
+          loadingDataMessage.textContent = `Loading data... ${counter} seconds`; // Update the loading message with the counter
+        }, 1000); // Update every 1 second
 
         // Google Apps Script URL
         const scriptURL =
@@ -580,6 +580,13 @@
           })
           .catch((error) => {
             console.error("Error fetching data:", error); // Debugging
+
+            // Clear the interval and hide the loading message in case of error
+            clearInterval(interval);
+            loadingDataMessage.classList.add("hidden");
+
+            // Re-enable the fetch data button after an error
+            fetchDataBtn.disabled = false;
             alert("Error fetching data");
             loadingDataMessage.classList.add("hidden"); // Hide loading message
           });

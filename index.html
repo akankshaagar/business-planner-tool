@@ -601,11 +601,11 @@
       });
       // Add event listener for the Hide Tables button
       hideTablesBtn.addEventListener("click", function () {
-        if (gridContainer.style.display === "none") {
-          gridContainer.style.display = "flex"; // Show the tables
+        if (container.style.display === "none") {
+          container.style.display = "flex"; // Show the tables
           hideTablesBtn.textContent = "Hide Tables"; // Change button text
         } else {
-          gridContainer.style.display = "none"; // Hide the tables
+          container.style.display = "none"; // Hide the tables
           hideTablesBtn.textContent = "Show Tables"; // Change button text
         }
       });

@@ -482,9 +482,11 @@
         // Disable the fetch data button to prevent multiple clicks
         fetchDataBtn.disabled = true;
 
+        // Start a dynamic counter to show how long it takes to load the data
+        let counter = 0;
         // Show loading message
         loadingDataMessage.classList.remove("hidden");
-        loadingDataMessage.textContent = "Loading data...";
+        //loadingDataMessage.textContent = "Loading data...";
 
         // Record the start time
         const startTime = Date.now();
@@ -514,8 +516,7 @@
             // Log the sheet names for debugging
             console.log("Available sheets:", sheets);*/
 
-            // Stop the counter
-            clearInterval(counterInterval);
+            clearInterval(interval); // Stop the counter
 
             // Hide loading message
             loadingDataMessage.classList.add("hidden");
@@ -580,6 +581,7 @@
           })
           .catch((error) => {
             console.error("Error fetching data:", error); // Debugging
+            alert("Error fetching data");
 
             // Clear the interval and hide the loading message in case of error
             clearInterval(interval);
@@ -587,8 +589,6 @@
 
             // Re-enable the fetch data button after an error
             fetchDataBtn.disabled = false;
-            alert("Error fetching data");
-            loadingDataMessage.classList.add("hidden"); // Hide loading message
           });
       });
     </script>

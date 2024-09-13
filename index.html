@@ -175,11 +175,11 @@
         "questionnaire-container"
       );
       const submitBtn = document.getElementById("submit-btn");
-      //const fetchDataBtn = document.getElementById("fetch-data-btn");
+
       const countdownMessage = document.getElementById("countdown-message");
       const loadingMessage = document.getElementById("loading-message");
       const successMessage = document.getElementById("success-message");
-
+      // For fetching data from sheet
       const fetchDataBtn = document.getElementById("fetch-data-btn");
       const dataTable = document.getElementById("data-table");
       const tableHead = document.getElementById("table-head");
@@ -261,8 +261,6 @@
 
         submitBtn.classList.add("hidden"); // Hide submit button initially
         countdownMessage.classList.add("hidden"); // Hide countdown initially
-        // fetchDataBtn.classList.add("hidden"); // Hide fetch data button initially
-        //  dataTable.classList.add("hidden"); // Hide data table initially
         console.log("Rendering form for:", businessType); // Debugging
 
         if (businessQuestions[businessType]) {
@@ -290,7 +288,6 @@
           });
 
           submitBtn.classList.remove("hidden"); // Show submit button only when form is ready
-          // fetchDataBtn.classList.remove("hidden"); // Show fetch data button when business type is selected
           console.log("Form rendered and buttons shown"); // Debugging
         } else {
           console.warn("No form found for the selected business type.");
@@ -344,7 +341,6 @@
                   form.reset(); // Reset the form
                   questionnaireContainer.innerHTML = ""; // Clear the form fields
                   submitBtn.classList.add("hidden"); // Hide the submit button again
-                  // fetchDataBtn.classList.add("hidden"); // Hide fetch data button again
                   console.log("Form submitted successfully"); // Debugging
                 } else {
                   // Handle errors
@@ -365,7 +361,7 @@
         }, 1000); // Countdown interval of 1 second
       });
 
-      // ==========================data fetch
+      // ==========================data fetch from 1st sheet only===========
 
       // Add event listener to the Fetch Data button
       fetchDataBtn.addEventListener("click", function () {
@@ -381,8 +377,15 @@
 
         fetch(scriptURL)
           .then((response) => response.json())
-          .then((data) => {
-            console.log("Data fetched:", data); // Debugging
+          .then((result) => {
+            console.log("Data fetched:", result); // Debugging
+
+            // for fetching sheet name
+            const data = result.data;
+            const sheets = result.sheets;
+
+            // Log the sheet names for debugging
+            console.log("Available sheets:", sheets);
 
             // Hide loading message
             loadingDataMessage.classList.add("hidden");
@@ -394,6 +397,9 @@
               console.log("No data found"); // Debugging
               alert("No data found");
             }
+
+            // Optionally display available sheets on the webpage (e.g., as a list)
+            displaySheetNames(sheets);
           })
           .catch((error) => {
             console.error("Error fetching data:", error); // Debugging
@@ -432,6 +438,20 @@
         // Show the data table
         dataTable.classList.remove("hidden");
         console.log("Table populated with sheet data"); // Debugging
+      }
+
+      // Function to display available sheet names (optional)
+      function displaySheetNames(sheets) {
+        const sheetList = document.createElement("ul");
+        sheets.forEach((sheetName) => {
+          const listItem = document.createElement("li");
+          listItem.textContent = sheetName;
+          sheetList.appendChild(listItem);
+        });
+
+        // Append the list to the DOM
+        const container = document.querySelector(".table-container");
+        container.appendChild(sheetList);
       }
     </script>
   </body>

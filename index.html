@@ -154,7 +154,8 @@
       </div>
     </form>
 
-    <!-- Add a button to fetch data, only first sheet
+    <!-- Add a button to fetch data, only first sheet -->
+
     <div class="table-container">
       <h3>View Data from Google Sheet</h3>
       <button id="fetch-data-btn">Fetch Data</button>
@@ -166,9 +167,8 @@
         <tbody id="table-body"></tbody>
       </table>
     </div>
- -->
 
-    <!-- <h2>Select a Sheet to View Data</h2>
+    <!-- <h2>Select a Sheet to View Data,  sheet selection</h2>
 
     <div>
       <label for="sheetSelect">Select Sheet:</label>
@@ -186,6 +186,7 @@
       <tbody id="table-body"></tbody>
     </table> -->
 
+    <!-- Olld
     <div class="table-container">
       <h3>View Data for Business Type</h3>
       <button id="fetch-data-btn" class="hidden">Fetch Data</button>
@@ -196,7 +197,7 @@
         <thead id="table-head"></thead>
         <tbody id="table-body"></tbody>
       </table>
-    </div>
+    </div> -->
 
     <script>
       const form = document.getElementById("business-form");
@@ -407,15 +408,15 @@
       // ==========================data fetch
 
       //   // Fetch and display data in table format
-      fetchDataBtn.addEventListener("click", function () {
-        const businessType = document.getElementById("businessType").value;
-        console.log("Fetching data for business type:", businessType); // Debugging
-        if (businessType) {
-          fetchDataForBusinessType(businessType);
-        } else {
-          alert("Please select a business type.");
-        }
-      });
+      //   fetchDataBtn.addEventListener("click", function () {
+      //     const businessType = document.getElementById("businessType").value;
+      //     console.log("Fetching data for business type:", businessType); // Debugging
+      //     if (businessType) {
+      //       fetchDataForBusinessType(businessType);
+      //     } else {
+      //       alert("Please select a business type.");
+      //     }
+      //   });
 
       // Function to fetch data from the Google Apps Script
       function fetchDataForBusinessType(businessType) {

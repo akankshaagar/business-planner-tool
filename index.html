@@ -476,6 +476,16 @@
         loadingDataMessage.classList.remove("hidden");
         loadingDataMessage.textContent = "Loading data...";
 
+        // Record the start time
+        const startTime = Date.now();
+        let counter = 0;
+
+        // Counter update function
+        const counterInterval = setInterval(() => {
+          counter = Math.floor((Date.now() - startTime) / 1000);
+          loadingDataMessage.textContent = `Loading data... (${counter} seconds elapsed)`;
+        }, 1000); // Update the counter every 1 second
+
         // Google Apps Script URL
         const scriptURL =
           "https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec";
@@ -492,6 +502,9 @@
 
             // Log the sheet names for debugging
             console.log("Available sheets:", sheets);*/
+
+            // Stop the counter
+            clearInterval(counterInterval);
 
             // Hide loading message
             loadingDataMessage.classList.add("hidden");

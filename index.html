@@ -483,13 +483,13 @@
         fetchDataBtn.disabled = true;
 
         // Start a dynamic counter to show how long it takes to load the data
-        let counter = 0;
-        // Show loading message
-        loadingDataMessage.classList.remove("hidden");
+
+        // Remove 'hidden' class and show the loading message
+        loadingDataMessage.style.display = "block"; // Ensure it's visible
         //loadingDataMessage.textContent = "Loading data...";
 
         // Record the start time
-        const startTime = Date.now();
+        let counter = 0;
         loadingDataMessage.textContent = `Loading data... 0 seconds`;
 
         // Start an interval to update the counter every second

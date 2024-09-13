@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Plan Form</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f7f7f7;
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      form {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .form-title {
+        margin-bottom: 20px;
+        font-size: 18px;
+        color: #444;
+        text-align: center;
+      }
+
+      .error {
+        color: red;
+        text-align: center;
+      }
+
+      .success-message {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #dff0d8;
+        color: #3c763d;
+        border-radius: 4px;
+        display: none;
+        text-align: center;
+      }
+      .countdown-message {
+        text-align: center;
+        margin-top: 10px;
+        color: #777;
+      }
+      .table-container {
+        margin-top: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ccc;
+      }
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f4f4f4;
+      }
+      .loading-message {
+        text-align: center;
+        margin-top: 10px;
+        color: #555;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>Business Plan Submission Form</h2>
+
+    <form
+      id="business-form"
+      method="POST"
+      action="https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec"
+    >
+      <div class="form-group">
+        <label for="businessType">Select Business Type:</label>
+        <select id="businessType" name="businessType" required>
+          <option value="">Select...</option>
+          <option value="Ecommerce">Ecommerce</option>
+          <option value="Retail">Retail</option>
+          <option value="SaaS">SaaS</option>
+          <option value="Manufacturing">Manufacturing</option>
+          <option value="Consultancy">Consultancy</option>
+        </select>
+      </div>
+
+      <!-- This container will dynamically hold the questionnaire fields -->
+      <div id="questionnaire-container"></div>
+
+      <!-- Submit button initially hidden -->
+      <button id="submit-btn" class="hidden" type="submit">Submit</button>
+
+      <div id="countdown-message" class="countdown-message hidden"></div>
+      <div class="loading-message hidden" id="loading-message"></div>
+      <div class="success-message hidden" id="success-message">
+        Form submitted successfully!
+      </div>
+    </form>
+
+    <!-- Add a button to fetch data, only first sheet -->
+
+    <div class="table-container">
+      <h3>View Data from Google Sheet</h3>
+      <button id="fetch-data-btn">Fetch Data</button>
+      <div id="loading-data-message" class="loading-message hidden">
+        Loading data...
+      </div>
+      <table id="data-table" class="hidden">
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+
+    <script>
+      const form = document.getElementById("business-form");
+      const questionnaireContainer = document.getElementById(
+        "questionnaire-container"
+      );
+      const submitBtn = document.getElementById("submit-btn");
+
+      const countdownMessage = document.getElementById("countdown-message");
+      const loadingMessage = document.getElementById("loading-message");
+      const successMessage = document.getElementById("success-message");
+      // For fetching data from sheet
+      const fetchDataBtn = document.getElementById("fetch-data-btn");
+      const dataTable = document.getElementById("data-table");
+      const tableHead = document.getElementById("table-head");
+      const tableBody = document.getElementById("table-body");
+      const loadingDataMessage = document.getElementById(
+        "loading-data-message"
+      );
+
+      console.log("JavaScript loaded"); // Debugging
+
+      // Business-specific questions
+      const businessQuestions = {
+        Ecommerce: [
+          { name: "websiteURL", type: "text", placeholder: "Website URL" },
+          {
+            name: "productTypes",
+            type: "text",
+            placeholder: "Types of Products",
+          },
+        ],
+        Retail: [
+          {
+            name: "storeLocation",
+            type: "text",
+            placeholder: "Store Location",
+          },
+          {
+            name: "annualRevenue",
+            type: "number",
+            placeholder: "Annual Revenue",
+          },
+        ],
+        SaaS: [
+          {
+            name: "subscriptionModel",
+            type: "text",
+            placeholder: "Subscription Model",
+          },
+          {
+            name: "customerBase",
+            type: "number",
+            placeholder: "Customer Base Size",
+          },
+        ],
+        Manufacturing: [
+          {
+            name: "productionCapacity",
+            type: "text",
+            placeholder: "Production Capacity",
+          },
+          { name: "productTypes", type: "text", placeholder: "Product Types" },
+        ],
+        Consultancy: [
+          {
+            name: "consultingAreas",
+            type: "text",
+            placeholder: "Consulting Areas",
+          },
+          {
+            name: "clientCount",
+            type: "number",
+            placeholder: "Number of Clients",
+          },
+        ],
+      };
+
+      // Event listener for business type dropdown
+      document
+        .getElementById("businessType")
+        .addEventListener("change", function () {
+          const businessType = this.value;
+          console.log(`Business type selected: ${businessType}`); // Log the selected business type
+          renderForm(businessType);
+        });
+
+      // Dynamically render the form based on selected business type
+      function renderForm(businessType) {
+        questionnaireContainer.innerHTML = ""; // Clear previous form
+
+        submitBtn.classList.add("hidden"); // Hide submit button initially
+        countdownMessage.classList.add("hidden"); // Hide countdown initially
+        console.log("Rendering form for:", businessType); // Debugging
+
+        if (businessQuestions[businessType]) {
+          console.log(`Rendering form for business type: ${businessType}`); // Log the form rendering process
+
+          // Loop through questions for selected business and append to form
+          businessQuestions[businessType].forEach((question) => {
+            console.log(`Adding question: ${question.placeholder}`); // Log each question being added
+
+            const inputDiv = document.createElement("div");
+            inputDiv.className = "form-group";
+
+            const label = document.createElement("label");
+            label.textContent = question.placeholder;
+
+            const input = document.createElement("input");
+            input.type = question.type;
+            input.name = question.name;
+            input.placeholder = question.placeholder;
+            input.required = true;
+
+            inputDiv.appendChild(label);
+            inputDiv.appendChild(input);
+            questionnaireContainer.appendChild(inputDiv);
+          });
+
+          submitBtn.classList.remove("hidden"); // Show submit button only when form is ready
+          console.log("Form rendered and buttons shown"); // Debugging
+        } else {
+          console.warn("No form found for the selected business type.");
+        }
+      }
+
+      // Form submission logic
+      form.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+        console.log("Form submission triggered"); // Debugging
+
+        // Disable the submit button to prevent multiple submissions
+        submitBtn.disabled = true;
+
+        // Set countdown time (e.g., 5 seconds)
+        let countdownTime = 5;
+
+        // Show countdown message
+
+        countdownMessage.classList.remove("hidden");
+        countdownMessage.textContent = `Form will be submitted in ${countdownTime} seconds...`;
+
+        const countdownInterval = setInterval(() => {
+          countdownTime--;
+          countdownMessage.textContent = `Form will be submitted in ${countdownTime} seconds...`;
+
+          if (countdownTime <= 0) {
+            clearInterval(countdownInterval); // Stop countdown
+
+            // Show a loading message
+            loadingMessage.textContent = "Submitting form... please wait.";
+            loadingMessage.style.display = "block";
+            countdownMessage.classList.add("hidden"); // Hide the countdown message
+            console.log("Submitting form data..."); // Debugging
+            // Collect form data
+            const formData = new FormData(form);
+
+            // Send the form data using Fetch API
+            fetch(form.action, {
+              method: "POST",
+              body: formData,
+            })
+              .then((response) => response.json())
+              .then((result) => {
+                console.log("Response from server:", result); // Debugging
+                loadingMessage.classList.add("hidden"); // Hide loading message
+                if (result.result === "success") {
+                  // Success: Show success message
+                  successMessage.style.display = "block";
+                  loadingMessage.style.display = "none"; // Hide the loading message
+                  form.reset(); // Reset the form
+                  questionnaireContainer.innerHTML = ""; // Clear the form fields
+                  submitBtn.classList.add("hidden"); // Hide the submit button again
+                  console.log("Form submitted successfully"); // Debugging
+                } else {
+                  // Handle errors
+                  console.error("Error saving data:", result.error);
+                  alert("Error submitting the form. Please try again.");
+                  submitBtn.disabled = false; // Re-enable the button on error
+                  loadingMessage.style.display = "none"; // Hide the loading message
+                }
+              })
+              .catch((error) => {
+                console.error("Error during form submission:", error);
+                alert("Error submitting the form. Please try again.");
+                submitBtn.disabled = false; // Re-enable the button on error
+                loadingMessage.style.display = "none"; // Hide the loading message
+                console.error("Error during form submission:", error); // Debugging
+              });
+          }
+        }, 1000); // Countdown interval of 1 second
+      });
+
+      // ==========================data fetch from 1st sheet only===========
+
+      // Add event listener to the Fetch Data button
+      fetchDataBtn.addEventListener("click", function () {
+        console.log("Fetch data button clicked"); // Debugging
+
+        // Show loading message
+        loadingDataMessage.classList.remove("hidden");
+        loadingDataMessage.textContent = "Loading data...";
+
+        // Google Apps Script URL
+        const scriptURL =
+          "https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec";
+
+        fetch(scriptURL)
+          .then((response) => response.json())
+          .then((result) => {
+            console.log("Data fetched:", result); // Debugging
+
+            // for fetching sheet name
+            const data = result.data;
+            const sheets = result.sheets;
+
+            // Log the sheet names for debugging
+            console.log("Available sheets:", sheets);
+
+            // Hide loading message
+            loadingDataMessage.classList.add("hidden");
+
+            // Check if data is not empty
+            if (data.length > 0) {
+              populateTable(data);
+            } else {
+              console.log("No data found"); // Debugging
+              alert("No data found");
+            }
+
+            // Optionally display available sheets on the webpage (e.g., as a list)
+            displaySheetNames(sheets);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error); // Debugging
+            alert("Error fetching data");
+            loadingDataMessage.classList.add("hidden"); // Hide loading message
+          });
+      });
+
+      // Function to populate the table with data
+      function populateTable(data) {
+        // Clear previous headers and rows
+        tableHead.innerHTML = "";
+        tableBody.innerHTML = "";
+
+        // Populate headers (first row of the data)
+        const headers = data[0];
+        const headerRow = document.createElement("tr");
+        headers.forEach((header) => {
+          const th = document.createElement("th");
+          th.textContent = header;
+          headerRow.appendChild(th);
+        });
+        tableHead.appendChild(headerRow);
+
+        // Populate data rows
+        data.slice(1).forEach((row) => {
+          const dataRow = document.createElement("tr");
+          row.forEach((cell) => {
+            const td = document.createElement("td");
+            td.textContent = cell;
+            dataRow.appendChild(td);
+          });
+          tableBody.appendChild(dataRow);
+        });
+
+        // Show the data table
+        dataTable.classList.remove("hidden");
+        console.log("Table populated with sheet data"); // Debugging
+      }
+
+      // Function to display available sheet names (optional)
+      function displaySheetNames(sheets) {
+        const sheetList = document.createElement("ul");
+        sheets.forEach((sheetName) => {
+          const listItem = document.createElement("li");
+          listItem.textContent = sheetName;
+          sheetList.appendChild(listItem);
+        });
+
+        // Append the list to the DOM
+        const container = document.querySelector(".table-container");
+        container.appendChild(sheetList);
+      }
+    </script>
+  </body>
+</html>
+
+<!-- const scriptProp = PropertiesService.getScriptProperties();
+
+// Setup the spreadsheet and save its ID for later use
+function initialSetup() {
+  const activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  scriptProp.setProperty('key', activeSpreadsheet.getId());
+  Logger.log(activeSpreadsheet);
+}
+// Handle POST requests from the HTML form
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.tryLock(10000);
+
+  try {
+    const businessType = e.parameter.businessType;
+    const doc = SpreadsheetApp.openById(scriptProp.getProperty('key'));
+    let sheet = doc.getSheetByName(businessType);
+
+    // Create sheet if it doesn't exist
+    if (!sheet) {
+      sheet = doc.insertSheet(businessType);
+      const headers = Object.keys(e.parameter);
+      sheet.appendRow(headers); // Add the headers dynamically
+    }
+
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const nextRow = sheet.getLastRow() + 1;
+
+    const newRow = headers.map(header => {
+      return header === 'Date' ? new Date() : e.parameter[header] || ''; // Fallback for missing params
+    });
+
+    sheet.getRange(nextRow, 1, 1, newRow.length).setValues([newRow]);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ 'result': 'success', 'row': nextRow }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (e) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ 'result': 'error', 'error': e }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}
+// working 1st sheet data 
+function doGet(e) {
+//   var sheet = SpreadsheetApp.openById('1Meyx-f-cxGunUXsPzcu3uhHeIj9hhloFOItPvJXpMgE').getActiveSheet();
+//   var data = sheet.getDataRange().getValues();
+//   Logger.log(data);
+//   // Filter out rows where all cells are empty
+//   var filteredData = data.filter(function(row) {
+//     return row.some(function(cell) {
+//       return cell !== ''; // Returns true if any cell in the row is not empty
+//     });
+//   });
+//  Logger.log(filteredData);
+//   // Returning JSON response
+//   var jsonData = JSON.stringify(filteredData);
+
+ const spreadsheet = SpreadsheetApp.openById('1Meyx-f-cxGunUXsPzcu3uhHeIj9hhloFOItPvJXpMgE');
+  
+  // Get active sheet data
+  const activeSheet = spreadsheet.getActiveSheet();
+  const data = activeSheet.getDataRange().getValues();
+  Logger.log("Original Data: "+ data);
+
+  // Filter out rows where all cells are empty
+  const filteredData = data.filter(function(row) {
+    return row.some(function(cell) {
+      return cell !== ''; // Returns true if any cell in the row is not empty
+    });
+  });
+  Logger.log("Filterd Data: "+ filteredData);
+
+  // Get list of all sheet names
+  const sheets = spreadsheet.getSheets();
+  const sheetNames = sheets.map(sheet => sheet.getName());
+  Logger.log("SHeet name: "+ sheetNames); // Log sheet names for debugging
+
+  // Return both filtered data and sheet names as JSON
+  const result = {
+    data: filteredData,
+    sheets: sheetNames
+  };
+
+  
+
+  const jsonData = JSON.stringify(result);
+  Logger.log("result: "+ jsonData);
+
+  return ContentService.createTextOutput(jsonData).setMimeType(ContentService.MimeType.JSON);
+}
+
+ -->

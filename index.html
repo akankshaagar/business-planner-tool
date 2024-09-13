@@ -91,6 +91,13 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
+      button:disabled {
+        background-color: #bdc3c7; /* Grey out the button */
+        color: #ffffff; /* Text color when disabled */
+        cursor: not-allowed; /* Show 'not-allowed' cursor */
+        box-shadow: none; /* Remove shadow */
+        opacity: 0.7; /* Slightly reduce opacity */
+      }
       /* Data column */
       .data-container {
         flex: 2;
@@ -471,6 +478,9 @@
       // Add event listener to the Fetch Data button
       fetchDataBtn.addEventListener("click", function () {
         console.log("Fetch data button clicked"); // Debugging
+
+        // Disable the fetch data button to prevent multiple clicks
+        fetchDataBtn.disabled = true;
 
         // Show loading message
         loadingDataMessage.classList.remove("hidden");

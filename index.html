@@ -391,6 +391,11 @@
                   questionnaireContainer.innerHTML = ""; // Clear the form fields
                   submitBtn.classList.add("hidden"); // Hide the submit button again
                   console.log("Form submitted successfully"); // Debugging
+                  // Hide success message and refresh form after 3 seconds
+                  setTimeout(() => {
+                    successMessage.style.display = "none"; // Hide success message
+                    submitBtn.classList.add("hidden"); // Hide the submit button again
+                  }, 5000); // 3 seconds timeout
                 } else {
                   // Handle errors
                   console.error("Error saving data:", result.error);

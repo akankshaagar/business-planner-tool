@@ -285,7 +285,7 @@
           });
 
           submitBtn.classList.remove("hidden"); // Show submit button only when form is ready
-          fetchDataBtn.classList.remove("hidden"); // Show fetch data button when business type is selected
+          // fetchDataBtn.classList.remove("hidden"); // Show fetch data button when business type is selected
           console.log("Form rendered and buttons shown"); // Debugging
         } else {
           console.warn("No form found for the selected business type.");
@@ -339,7 +339,7 @@
                   form.reset(); // Reset the form
                   questionnaireContainer.innerHTML = ""; // Clear the form fields
                   submitBtn.classList.add("hidden"); // Hide the submit button again
-                  fetchDataBtn.classList.add("hidden"); // Hide fetch data button again
+                  // fetchDataBtn.classList.add("hidden"); // Hide fetch data button again
                   console.log("Form submitted successfully"); // Debugging
                 } else {
                   // Handle errors

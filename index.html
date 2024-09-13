@@ -251,6 +251,7 @@
       <div class="data-container">
         <h3>View Data from Google Sheets</h3>
         <button id="fetch-data-btn">Fetch all Data</button>
+        <button id="hide-tables-btn" style="display: none">Hide Tables</button>
         <div id="loading-data-message" class="loading-message hidden">
           Loading data...
         </div>
@@ -285,6 +286,7 @@
       const successMessage = document.getElementById("success-message");
       // For fetching data from sheet
       const fetchDataBtn = document.getElementById("fetch-data-btn");
+      const hideTablesBtn = document.getElementById("hide-tables-btn"); // New Hide Tables button
       const dataTable = document.getElementById("data-table");
       const tableHead = document.getElementById("table-head");
       const tableBody = document.getElementById("table-body");
@@ -481,7 +483,7 @@
 
         // Disable the fetch data button to prevent multiple clicks
         fetchDataBtn.disabled = true;
-
+        hideTablesBtn.style.display = "none"; // Hide the hide button while fetching
         // Start a dynamic counter to show how long it takes to load the data
 
         // Remove 'hidden' class and show the loading message
@@ -579,6 +581,11 @@
 
               console.log(`Table created for sheet: ${sheetName}`); // Debugging
             });
+            // Re-enable the fetch data button after data is loaded
+            fetchDataBtn.disabled = false;
+
+            // Show the Hide Tables button after the data is fetched
+            hideTablesBtn.style.display = "inline-block";
           })
           .catch((error) => {
             console.error("Error fetching data:", error); // Debugging
@@ -591,6 +598,16 @@
             // Re-enable the fetch data button after an error
             fetchDataBtn.disabled = false;
           });
+      });
+      // Add event listener for the Hide Tables button
+      hideTablesBtn.addEventListener("click", function () {
+        if (gridContainer.style.display === "none") {
+          gridContainer.style.display = "flex"; // Show the tables
+          hideTablesBtn.textContent = "Hide Tables"; // Change button text
+        } else {
+          gridContainer.style.display = "none"; // Hide the tables
+          hideTablesBtn.textContent = "Show Tables"; // Change button text
+        }
       });
     </script>
   </body>

@@ -483,6 +483,7 @@
         // Counter update function
         const counterInterval = setInterval(() => {
           counter = Math.floor((Date.now() - startTime) / 1000);
+          console.log(counter);
           loadingDataMessage.textContent = `Loading data... (${counter} seconds elapsed)`;
         }, 1000); // Update the counter every 1 second
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Business Plan Form</title>
+
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -168,37 +169,6 @@
       </table>
     </div>
 
-    <!-- <h2>Select a Sheet to View Data,  sheet selection</h2>
-
-    <div>
-      <label for="sheetSelect">Select Sheet:</label>
-      <select id="sheetSelect">
-        <option value="">-- Select a sheet --</option>
-      </select>
-      <button id="fetch-data-btn">Fetch Data</button>
-    </div> -->
-
-    <!-- <div id="loading-data-message" class="loading-message hidden">
-      Loading data...
-    </div>
-    <table id="data-table" class="hidden">
-      <thead id="table-head"></thead>
-      <tbody id="table-body"></tbody>
-    </table> -->
-
-    <!-- Olld
-    <div class="table-container">
-      <h3>View Data for Business Type</h3>
-      <button id="fetch-data-btn" class="hidden">Fetch Data</button>
-      <div id="loading-data-message" class="loading-message hidden">
-        Loading data...
-      </div>
-      <table id="data-table" class="hidden">
-        <thead id="table-head"></thead>
-        <tbody id="table-body"></tbody>
-      </table>
-    </div> -->
-
     <script>
       const form = document.getElementById("business-form");
       const questionnaireContainer = document.getElementById(
@@ -217,16 +187,6 @@
       const loadingDataMessage = document.getElementById(
         "loading-data-message"
       );
-
-      // for sheet population
-      // const sheetSelect = document.getElementById("sheetSelect");
-
-      //   const dataTable = document.getElementById("data-table");
-      //   const tableHead = document.getElementById("table-head");
-      //   const tableBody = document.getElementById("table-body");
-      //   const loadingDataMessage = document.getElementById(
-      //     "loading-data-message"
-      //   );
 
       console.log("JavaScript loaded"); // Debugging
 

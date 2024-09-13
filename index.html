@@ -153,7 +153,7 @@
         Form submitted successfully!
       </div>
     </form>
-    <div class="table-container">
+    <!-- <div class="table-container">
       <h3>View Data for Business Type</h3>
       <button id="fetch-data-btn" class="hidden">Fetch Data</button>
       <div id="loading-data-message" class="loading-message hidden">
@@ -163,7 +163,7 @@
         <thead id="table-head"></thead>
         <tbody id="table-body"></tbody>
       </table>
-    </div>
+    </div> -->
 
     <script>
       const form = document.getElementById("business-form");
@@ -171,14 +171,14 @@
         "questionnaire-container"
       );
       const submitBtn = document.getElementById("submit-btn");
-      const fetchDataBtn = document.getElementById("fetch-data-btn");
+      //const fetchDataBtn = document.getElementById("fetch-data-btn");
       const countdownMessage = document.getElementById("countdown-message");
       const loadingMessage = document.getElementById("loading-message");
       const successMessage = document.getElementById("success-message");
 
-      const dataTable = document.getElementById("data-table");
-      const tableHead = document.getElementById("table-head");
-      const tableBody = document.getElementById("table-body");
+      //   const dataTable = document.getElementById("data-table");
+      //   const tableHead = document.getElementById("table-head");
+      //   const tableBody = document.getElementById("table-body");
       const loadingDataMessage = document.getElementById(
         "loading-data-message"
       );
@@ -256,8 +256,8 @@
 
         submitBtn.classList.add("hidden"); // Hide submit button initially
         countdownMessage.classList.add("hidden"); // Hide countdown initially
-        fetchDataBtn.classList.add("hidden"); // Hide fetch data button initially
-        dataTable.classList.add("hidden"); // Hide data table initially
+        // fetchDataBtn.classList.add("hidden"); // Hide fetch data button initially
+        //  dataTable.classList.add("hidden"); // Hide data table initially
         console.log("Rendering form for:", businessType); // Debugging
 
         if (businessQuestions[businessType]) {
@@ -362,75 +362,75 @@
 
       // ==========================data fetch
 
-      // Fetch and display data in table format
-      fetchDataBtn.addEventListener("click", function () {
-        const businessType = document.getElementById("businessType").value;
-        console.log("Fetching data for business type:", businessType); // Debugging
-        if (businessType) {
-          fetchDataForBusinessType(businessType);
-        } else {
-          alert("Please select a business type.");
-        }
-      });
+      //   // Fetch and display data in table format
+      //   fetchDataBtn.addEventListener("click", function () {
+      //     const businessType = document.getElementById("businessType").value;
+      //     console.log("Fetching data for business type:", businessType); // Debugging
+      //     if (businessType) {
+      //       fetchDataForBusinessType(businessType);
+      //     } else {
+      //       alert("Please select a business type.");
+      //     }
+      //   });
 
-      // Function to fetch data from the Google Apps Script
-      function fetchDataForBusinessType(businessType) {
-        const url = `https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec?businessType=${businessType}`;
-        loadingDataMessage.classList.remove("hidden"); // Show loading message
-        fetch(url, {
-          method: "GET",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // mode: 'no-cors', // This disables CORS errors but doesn't allow access to the response
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            loadingDataMessage.classList.add("hidden"); // Hide loading message
-            if (data.result === "success") {
-              console.log("Data fetched:", data.data); // Debugging
-              populateTable(data.data);
-            } else {
-              alert("No data found for this business type");
-            }
-          })
-          .catch((error) => {
-            loadingDataMessage.classList.add("hidden"); // Hide loading message
-            console.error("Error fetching data:", error); // Debugging
-            alert("Error fetching data");
-          });
-      }
+      //   // Function to fetch data from the Google Apps Script
+      //   function fetchDataForBusinessType(businessType) {
+      //     const url = `https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec?businessType=${businessType}`;
+      //     loadingDataMessage.classList.remove("hidden"); // Show loading message
+      //     fetch(url, {
+      //       method: "GET",
+      //       mode: "cors",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       // mode: 'no-cors', // This disables CORS errors but doesn't allow access to the response
+      //     })
+      //       .then((response) => response.json())
+      //       .then((data) => {
+      //         loadingDataMessage.classList.add("hidden"); // Hide loading message
+      //         if (data.result === "success") {
+      //           console.log("Data fetched:", data.data); // Debugging
+      //           populateTable(data.data);
+      //         } else {
+      //           alert("No data found for this business type");
+      //         }
+      //       })
+      //       .catch((error) => {
+      //         loadingDataMessage.classList.add("hidden"); // Hide loading message
+      //         console.error("Error fetching data:", error); // Debugging
+      //         alert("Error fetching data");
+      //       });
+      //   }
 
-      // Function to populate the table with sheet data
-      function populateTable(data) {
-        tableHead.innerHTML = ""; // Clear previous headers
-        tableBody.innerHTML = ""; // Clear previous data
+      //   // Function to populate the table with sheet data
+      //   function populateTable(data) {
+      //     tableHead.innerHTML = ""; // Clear previous headers
+      //     tableBody.innerHTML = ""; // Clear previous data
 
-        // Populate headers
-        const headers = data[0];
-        const headerRow = document.createElement("tr");
-        headers.forEach((header) => {
-          const th = document.createElement("th");
-          th.textContent = header;
-          headerRow.appendChild(th);
-        });
-        tableHead.appendChild(headerRow);
+      //     // Populate headers
+      //     const headers = data[0];
+      //     const headerRow = document.createElement("tr");
+      //     headers.forEach((header) => {
+      //       const th = document.createElement("th");
+      //       th.textContent = header;
+      //       headerRow.appendChild(th);
+      //     });
+      //     tableHead.appendChild(headerRow);
 
-        // Populate data rows
-        data.slice(1).forEach((row) => {
-          const dataRow = document.createElement("tr");
-          row.forEach((cell) => {
-            const td = document.createElement("td");
-            td.textContent = cell;
-            dataRow.appendChild(td);
-          });
-          tableBody.appendChild(dataRow);
-        });
+      //     // Populate data rows
+      //     data.slice(1).forEach((row) => {
+      //       const dataRow = document.createElement("tr");
+      //       row.forEach((cell) => {
+      //         const td = document.createElement("td");
+      //         td.textContent = cell;
+      //         dataRow.appendChild(td);
+      //       });
+      //       tableBody.appendChild(dataRow);
+      //     });
 
-        dataTable.classList.remove("hidden"); // Show the data table
-        console.log("Table populated with sheet data"); // Debugging
-      }
+      //     dataTable.classList.remove("hidden"); // Show the data table
+      //     console.log("Table populated with sheet data"); // Debugging
+      //   }
     </script>
   </body>
 </html>

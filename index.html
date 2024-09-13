@@ -305,14 +305,6 @@
           .then((sheetsData) => {
             console.log("Data fetched from all sheets:", sheetsData); // Debugging
 
-            /* Old sheet list
-            // for fetching sheet name
-            const data = result.data;
-            const sheets = result.sheets;
-
-            // Log the sheet names for debugging
-            console.log("Available sheets:", sheets);*/
-
             clearInterval(interval); // Stop the counter
             loadingDataMessage.style.display = "none"; // Hide the loading message after data is loaded
 
@@ -368,6 +360,8 @@
 
               // Append table to the container
               container.appendChild(table);
+              // Call renderGraph to create a graph for the current sheet
+              renderGraph(data, sheetName);
 
               console.log(`Table created for sheet: ${sheetName}`); // Debugging
             });
@@ -400,22 +394,41 @@
         }
       });
 
-      // Function to render the graph using Chart.js
-      function renderGraph(data) {
-        const ctx = document.getElementById("chartCanvas").getContext("2d");
+      // Define a mapping of sheet names to chart types
+      const sheetChartTypes = {
+        Ecommerce: "bar", // Bar chart for Ecommerce data
+        Retail: "line", // Line chart for Retail data
+        SaaS: "pie", // Pie chart for SaaS data
+        Manufacturing: "doughnut", // Doughnut chart for Manufacturing data
+        Consultancy: "radar", // Radar chart for Consultancy data
+      };
 
-        // Example: extracting data from the first sheet
-        const labels = data.slice(1).map((row) => row[0]); // Use the first column as labels
-        const values = data.slice(1).map((row) => parseFloat(row[1])); // Use the second column as values (make sure it's numeric)
+      // Function to render the graph for a given sheet's data
+      function renderGraph(data, sheetName) {
+        // Create a new canvas element for each graph
+        const graphContainer = document.createElement("div");
+        graphContainer.classList.add("graph-container");
 
-        // Creating the chart
-        const chart = new Chart(ctx, {
-          type: "bar", // You can change this to 'line', 'pie', etc.
+        const canvas = document.createElement("canvas");
+        graphContainer.appendChild(canvas);
+
+        const ctx = canvas.getContext("2d");
+
+        // Extract labels and values from the data (assuming first column is labels, second column is values)
+        const labels = data.slice(1).map((row) => row[0]); // First column for labels (ignoring the header row)
+        const values = data.slice(1).map((row) => parseFloat(row[1])); // Second column for values (converting to numbers)
+
+        // Get the chart type from the sheetChartTypes mapping or default to 'bar'
+        const chartType = sheetChartTypes[sheetName] || "bar";
+
+        // Create a new chart
+        new Chart(ctx, {
+          type: chartType, // Use the chart type based on the sheet name
           data: {
             labels: labels,
             datasets: [
               {
-                label: "Graph of Data",
+                label: `Graph for ${sheetName}`, // Label for each graph
                 data: values,
                 backgroundColor: "rgba(75, 192, 192, 0.2)",
                 borderColor: "rgba(75, 192, 192, 1)",
@@ -431,6 +444,9 @@
             },
           },
         });
+
+        // Append the graph container after the table
+        container.appendChild(graphContainer);
       }
     </script>
   </body>

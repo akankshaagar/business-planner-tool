@@ -154,7 +154,7 @@
       </div>
     </form>
 
-    <!-- Add a button to fetch data -->
+    <!-- Add a button to fetch data, only first sheet
     <div class="table-container">
       <h3>View Data from Google Sheet</h3>
       <button id="fetch-data-btn">Fetch Data</button>
@@ -166,6 +166,25 @@
         <tbody id="table-body"></tbody>
       </table>
     </div>
+ -->
+
+    <h2>Select a Sheet to View Data</h2>
+
+    <div>
+      <label for="sheetSelect">Select Sheet:</label>
+      <select id="sheetSelect">
+        <option value="">-- Select a sheet --</option>
+      </select>
+      <button id="fetch-data-btn">Fetch Data</button>
+    </div>
+
+    <div id="loading-data-message" class="loading-message hidden">
+      Loading data...
+    </div>
+    <table id="data-table" class="hidden">
+      <thead id="table-head"></thead>
+      <tbody id="table-body"></tbody>
+    </table>
 
     <!-- <div class="table-container">
       <h3>View Data for Business Type</h3>
@@ -197,6 +216,7 @@
       const loadingDataMessage = document.getElementById(
         "loading-data-message"
       );
+      const sheetSelect = document.getElementById("sheetSelect");
 
       //   const dataTable = document.getElementById("data-table");
       //   const tableHead = document.getElementById("table-head");
@@ -454,19 +474,120 @@
       //     console.log("Table populated with sheet data"); // Debugging
       //   }
 
+      // Add event listener to the Fetch Data button======working
+      //   fetchDataBtn.addEventListener("click", function () {
+      //     console.log("Fetch data button clicked"); // Debugging
+
+      //     // Show loading message
+      //     loadingDataMessage.classList.remove("hidden");
+      //     loadingDataMessage.textContent = "Loading data...";
+
+      //     // Google Apps Script URL
+      //     const scriptURL =
+      //       "https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec";
+
+      //     fetch(scriptURL)
+      //       .then((response) => response.json())
+      //       .then((data) => {
+      //         console.log("Data fetched:", data); // Debugging
+
+      //         // Hide loading message
+      //         loadingDataMessage.classList.add("hidden");
+
+      //         // Check if data is not empty
+      //         if (data.length > 0) {
+      //           populateTable(data);
+      //         } else {
+      //           console.log("No data found"); // Debugging
+      //           alert("No data found");
+      //         }
+      //       })
+      //       .catch((error) => {
+      //         console.error("Error fetching data:", error); // Debugging
+      //         alert("Error fetching data");
+      //         loadingDataMessage.classList.add("hidden"); // Hide loading message
+      //       });
+      //   });
+
+      //   // Function to populate the table with data
+      //   function populateTable(data) {
+      //     // Clear previous headers and rows
+      //     tableHead.innerHTML = "";
+      //     tableBody.innerHTML = "";
+
+      //     // Populate headers (first row of the data)
+      //     const headers = data[0];
+      //     const headerRow = document.createElement("tr");
+      //     headers.forEach((header) => {
+      //       const th = document.createElement("th");
+      //       th.textContent = header;
+      //       headerRow.appendChild(th);
+      //     });
+      //     tableHead.appendChild(headerRow);
+
+      //     // Populate data rows
+      //     data.slice(1).forEach((row) => {
+      //       const dataRow = document.createElement("tr");
+      //       row.forEach((cell) => {
+      //         const td = document.createElement("td");
+      //         td.textContent = cell;
+      //         dataRow.appendChild(td);
+      //       });
+      //       tableBody.appendChild(dataRow);
+      //     });
+
+      //     // Show the data table
+      //     dataTable.classList.remove("hidden");
+      //     console.log("Table populated with sheet data"); // Debugging
+      //   }
+
+      // Google Apps Script URL
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec";
+
+      // Function to get all sheet names and populate the dropdown
+      function loadSheets() {
+        fetch(`${scriptURL}?action=getSheets`)
+          .then((response) => response.json())
+          .then((sheetNames) => {
+            console.log("Sheet names:", sheetNames); // Debugging
+            // Populate the select dropdown with sheet names
+            sheetNames.forEach((sheetName) => {
+              const option = document.createElement("option");
+              option.value = sheetName;
+              option.textContent = sheetName;
+              sheetSelect.appendChild(option);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching sheet names:", error); // Debugging
+            alert("Error fetching sheet names");
+          });
+      }
+
+      // Call loadSheets function when the page loads
+      window.onload = loadSheets;
+
       // Add event listener to the Fetch Data button
       fetchDataBtn.addEventListener("click", function () {
-        console.log("Fetch data button clicked"); // Debugging
+        const selectedSheet = sheetSelect.value;
+        if (!selectedSheet) {
+          alert("Please select a sheet");
+          return;
+        }
+
+        console.log("Fetching data for sheet:", selectedSheet); // Debugging
 
         // Show loading message
         loadingDataMessage.classList.remove("hidden");
         loadingDataMessage.textContent = "Loading data...";
 
-        // Google Apps Script URL
-        const scriptURL =
-          "https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec";
-
-        fetch(scriptURL)
+        // Fetch data for the selected sheet
+        fetch(
+          `${scriptURL}?action=getData&sheetName=${encodeURIComponent(
+            selectedSheet
+          )}`
+        )
           .then((response) => response.json())
           .then((data) => {
             console.log("Data fetched:", data); // Debugging
@@ -507,13 +628,17 @@
 
         // Populate data rows
         data.slice(1).forEach((row) => {
-          const dataRow = document.createElement("tr");
-          row.forEach((cell) => {
-            const td = document.createElement("td");
-            td.textContent = cell;
-            dataRow.appendChild(td);
-          });
-          tableBody.appendChild(dataRow);
+          // Filter out blank rows
+          const isRowBlank = row.every((cell) => cell === "");
+          if (!isRowBlank) {
+            const dataRow = document.createElement("tr");
+            row.forEach((cell) => {
+              const td = document.createElement("td");
+              td.textContent = cell;
+              dataRow.appendChild(td);
+            });
+            tableBody.appendChild(dataRow);
+          }
         });
 
         // Show the data table

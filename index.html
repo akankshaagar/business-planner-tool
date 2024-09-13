@@ -379,6 +379,7 @@
         loadingDataMessage.classList.remove("hidden"); // Show loading message
         fetch(url, {
           method: "GET",
+          mode: "cors",
           headers: {
             "Content-Type": "application/json",
           },

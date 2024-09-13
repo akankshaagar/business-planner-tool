@@ -153,6 +153,20 @@
         Form submitted successfully!
       </div>
     </form>
+
+    <!-- Add a button to fetch data -->
+    <div class="table-container">
+      <h3>View Data from Google Sheet</h3>
+      <button id="fetch-data-btn">Fetch Data</button>
+      <div id="loading-data-message" class="loading-message hidden">
+        Loading data...
+      </div>
+      <table id="data-table" class="hidden">
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+
     <!-- <div class="table-container">
       <h3>View Data for Business Type</h3>
       <button id="fetch-data-btn" class="hidden">Fetch Data</button>
@@ -449,7 +463,8 @@
         loadingDataMessage.textContent = "Loading data...";
 
         // Google Apps Script URL
-        const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+        const scriptURL =
+          "https://script.google.com/macros/s/AKfycbyuQlio3S49UPHX67XB5OIm2TkLcejBeE7N3jsJhI3iTMLD0GxsGvbEnK2ydJI6ICq_/exec";
 
         fetch(scriptURL)
           .then((response) => response.json())

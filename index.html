@@ -71,6 +71,12 @@
         border-color: #2980b9;
         outline: none;
       }
+      .btn-wrapper {
+        display: flex;
+        gap: 20px;
+        width: auto;
+        align-items: center;
+      }
 
       button {
         display: block;
@@ -250,8 +256,13 @@
       <!-- Data Column -->
       <div class="data-container">
         <h3>View Data from Google Sheets</h3>
-        <button id="fetch-data-btn">Fetch all Data</button>
-        <button id="hide-tables-btn" style="display: none">Hide Tables</button>
+        <div class="btn-wrapper">
+          <button id="fetch-data-btn">Fetch all Data</button>
+          <button id="hide-tables-btn" style="display: none">
+            Hide Tables
+          </button>
+        </div>
+
         <div id="loading-data-message" class="loading-message hidden">
           Loading data...
         </div>
